@@ -1,0 +1,807 @@
+#!/bin/bash
+# - upstream_repo
+# - arch
+# upstream_commit
+# upstream_branch
+# custom_repo_name
+# custom_repo_addr
+# mount_repo_name
+# mount_repo_addr
+# repo_addr
+# whether_email
+# compat_os
+# SRPMs jobs not use upstream_repo, Git jobs use all.
+# user can add mount_repo_name and mount_repo_addr to setup
+# local repo, value can be an array
+echo "nameserver ${ip}" > /etc/resolv.conf
+yum install -y rpm-build
+
+mount_repo_name=${mount_repo_name//,/ }
+mount_repo_addr=${mount_repo_addr//,/ }
+
+. $LKP_SRC/lib/debug.sh
+. $LKP_SRC/lib/upload.sh
+. $LKP_SRC/lib/rpm.sh
+. $LKP_SRC/lib/email.sh
+
+: "${compat_os:=budding-openeuler}"
+
+([ -n "$depend_upstream_repo" ] || [ -n "$custom_repo_name" ] || [ -n "$pr_num" ]) || die "custom_repo_name is empty"
+
+dest_dir="/rpm/upload/${os}-${os_version}/${custom_repo_name}"
+rpmdev_dir="/home/lkp/rpmbuild"
+rpm_dest="${dest_dir}/${os_arch}/Packages"
+src_rpm_dest="${dest_dir}/source/Packages"
+
+# ----add var---
+rpmbuild_result=1
+# 构建类型（git、srpm、local_srpm）
+rpmbuild_type=""
+res_rpm_file_exten=""
+repair_dir="/lkp/lkp/src/repair-dir/"
+repair_dir_src="/lkp/lkp/src/repair-dir/src"
+rpmbuild_result_path="/tmp/"
+
+#--
+lkp_home_dir="/home/lkp"
+local_srpm_dir="${repair_dir}/srpm"
+src_rpm_sorce_path="/root/rpmbuild"
+namespace=""
+reponame_git=""
+reponame=""
+res_rpm_file_exten=""
+
+sed -i 's#https://repo.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1#https://mirrors.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1#g' /etc/yum.repos.d/openEuler.repo
+declare -a reverse_depends
+die()
+{
+	[ -n "$upstream_commit" ] && [ -n "$secrets_my_token" ] && build_comment "rpmbuild_failed"
+	[ -n "$pr_num" ] && [ -n "$secrets_my_token" ] && build_comment "rpmbuild_failed"
+	rpmbuild_email "rpmbuild_failed"
+	echo "$@"
+	exit 99
+}
+
+git_proxy()
+{
+	git config --global url."https://ghproxy.com/https://github.com".insteadOf "https://github.com"
+}
+
+from_git()
+{
+	package_name=${upstream_repo##*/}
+	package_name=${package_name%%.git*}
+	tmp_rpm_dest="/tmp${rpm_dest}/$id"
+
+	init_workspace
+	download_upstream_repo
+}
+
+echo_commit_info()
+{
+	for i in $(git_pretty_format "$1" "$2" "$3")
+	do
+		echo "$4+=('"$i"')"
+	done
+}
+
+get_merge_info()
+{
+	declare -a name
+	declare -a email
+	declare -A email_name_hash
+
+	name=(liping wangyong)
+	email=(liping136@huawei.com wangyong187@huawei.com)
+
+#	eval $(echo_commit_info "--no-color" "%ae" "$1" email)
+#	eval $(echo_commit_info "--no-color" "%ce" "$1" email)
+#	eval $(echo_commit_info "-n1" "%ae" "$2" email)
+#	eval $(echo_commit_info "-n1" "%ce" "$2" email)
+#
+#	IFS_SAVE=$IFS
+#	IFS=$'\n'
+#	eval $(echo_commit_info "--no-color" "%an" "$1" name)
+#	eval $(echo_commit_info "--no-color" "%cn" "$1" name)
+#	eval $(echo_commit_info "-n1" "%an" "$2" name)
+#	eval $(echo_commit_info "-n1" "%cn" "$2" name)
+#	IFS=$IFS_SAVE
+
+	for key in "${!email[@]}"
+	do
+		[[ "${email[$key]}" =~ ^noreply ]] && continue
+		[[ "${email[$key]}" =~ ^80474298@qq.com ]] && continue
+		email_name_hash["${email[$key]}"]="${name[$key]}"
+	done
+
+	IFS_SAVE=$IFS
+	IFS=$';'
+	eval $3='"${!email_name_hash[*]}"'
+	IFS=$IFS_SAVE
+
+	IFS_SAVE=$IFS
+	IFS=$','
+	eval $4='"${email_name_hash[*]}"'
+	IFS=$IFS_SAVE
+}
+
+git_pretty_format()
+{
+	curl -sS -H 'Content-Type: Application/json' -XPOST "$REMOTE_GIT_HOST:$REMOTE_GIT_PORT"'/git_command' -d '{"git_repo": "'${upstream_dir}/${upstream_repo}.git'", "git_command": ["git-log","'$1'","--pretty=format:'$2'", "'$3'"]}'
+}
+
+is_git_merge()
+{
+	curl -sS -H 'Content-Type: Application/json' -XPOST "$REMOTE_GIT_HOST:$REMOTE_GIT_PORT"'/git_command' -d '{"git_repo": "'${upstream_dir}/${upstream_repo}.git'", "git_command": ["git-show", "--no-patch", "--format=%p", "'$1'"]}'
+}
+
+rpmbuild_email()
+{
+	[ -n "$whether_email" ] || return
+	if [[ $(is_git_merge "$upstream_commit" | wc -w) -eq 1 ]]; then
+		get_merge_info "" "${upstream_commit}" author_email author_name
+	else
+		parent_commit=$(is_git_merge $upstream_commit | sed 's/\ /.../')
+		get_merge_info "${parent_commit}" "${upstream_commit}" author_email author_name
+	fi
+
+	if [ -n "$depend_job_id" ]; then
+		send_email "reverse_rpmbuild"
+	else
+		send_email $1
+	fi
+}
+
+## --- fxj
+
+srpm_mv()
+{
+	rm -rf ${rpmdev_dir}
+	mv -f ${src_rpm_sorce_path} ${lkp_home_dir}
+	chown -R lkp:lkp ${rpmdev_dir}
+}
+
+install_local_srpm()
+{
+	add_user_mock
+	echo "local srpm path:${local_srpm_dir}/${repo_addr}"
+	rpm -i ${local_srpm_dir}/${repo_addr} || die "install local srpm ${repo_addr} fail..."
+	srpm_mv
+}
+
+set_repo_name()
+{
+	namespace=$(echo $repo_addr | awk -F'/' '{print $4}')
+	reponame_git=$(echo $repo_addr | awk -F'/' '{print $5}')
+	reponame=${reponame_git::-4}
+}
+
+get_clone_url()
+{
+    echo "${reponame:0:2}" | awk '{gsub(/[^a-zA-Z]/,"_"); print tolower($0)}'
+}
+
+clone_ll()
+{
+    first_char=${reponame:0:1}first_char=${reponame:0:1}
+    if [[ "${first_char}" =~ [A-Z] ]];then
+	first_char=$(echo "${first_char}" | tr '[:upper:]' '[:lower:]')
+    fi
+    if echo "${first_char}" | grep -q "^[^a-z]$";then
+	first_char="_"
+    fi
+    second_char=${reponame:1:1}
+    if [[ "${second_char}" =~ [A-Z] ]];then
+	second_char=$(echo "${second_char}" | tr '[:upper:]' '[:lower:]')
+    fi
+    if echo "${second_char}" | grep -q "^[^a-z]$";then
+	second_char="_"
+    fi
+    if [ "${first_char}" \< "j" ] || [ "${first_char}" = "j"  -a  "${second_char}" \< "j" ] || [ "${first_char}" = "_"  ] || [ "${first_char}" \< "k"  -a  "${second_char}" = "_" ];then
+	git_clone_url="http://gituser:gitpassword@172.168.177.202"
+    else
+	git_clone_url="http://gituser:gitpassword@172.168.178.72"
+    fi
+}
+
+git_clone(){
+	set_repo_name
+	yum install -y  git
+	if [ $? -ne 0 ]; then
+		echo "git download fail"
+		exit 1
+	fi
+	clone_ll
+	echo "try clone git_url: $repo_addr1"
+	local count=1
+	local prefix_reponame=$(get_clone_url)
+	echo "git clone $git_clone_url/$prefix_reponame/$namespace/${reponame}.git" 
+	while [ $count -le 5 ]; do
+		count=$((count+1))
+		echo "src code path:$(pwd)"
+		git clone -q $git_clone_url/$prefix_reponame/$namespace/${reponame}.git && return 0 
+	done
+	echo "git clone repo failed: $reponame"git clone -q $git_clone_url/$prefix_reponame/$namespace/${reponame}.git && return 0
+	return 1
+
+}
+
+build_repo_tar_gz()
+{
+	tar_gz_name="$tar_name.tar.gz"
+	[ -d "${rpmdev_dir}/SOURCES" ] || mkdir -p "${rpmdev_dir}/SOURCES"
+	tar czf "${rpmdev_dir}/SOURCES/${tar_gz_name}" "${reponame}"
+
+	[ -f "${rpmdev_dir}/SOURCES/${tar_gz_name}" ] || return 1
+	return 0
+}
+
+clone_srpm()
+{
+	git_clone
+	if [ $? -ne 0 ]; then
+		echo "git clone fail..."
+		exit 1
+	fi
+	build_repo_tar_gz
+
+}
+
+from_srpm()
+{
+	[ -n "$repo_addr" ] || die "repo_addr is empty"
+	
+	if [[ "${repo_addr##*.}" = "rpm" && "${repo_addr}" =~ ^http ]]; then
+		# 源码仓获取
+		install_srpm
+		rpmbuild_type="srpm"
+	elif [[ "${repo_addr##*.}" = "git" ]]; then
+		# git仓库获取
+		clone_srpm
+	else
+	    install_local_srpm
+		rpmbuild_type="local_srpm"
+	fi
+}
+
+## --- fxj
+
+init_workspace()
+{
+	[ -d /home/lkp ] ||
+		{
+			mkdir -m 700 /home/lkp
+			chown lkp /home/lkp
+			chgrp lkp /home/lkp
+		}
+	# generate workspace in ${HOME}
+	su lkp -c rpmdev-setuptree
+}
+
+download_upstream_repo()
+{
+	local url="git://${GIT_SERVER}/${upstream_dir}/${upstream_repo}"
+	local ref=""
+
+	[ -d "$package_name" ] && rm -rf $package_name
+	git clone -q "$url" 2>/dev/null || git clone -q "$upstream_repo" || die "clone git repo ${package_name} failed: $url"
+	cd "$package_name" || exit
+	pr=$(echo $pr_merge_reference_name |awk '{split($0,a,"/");print a[3]}')
+	[ -n "${pr_merge_reference_name}" ] && git fetch origin pull/$pr/head
+	[ -n "${upstream_branch}" ] && ref="${upstream_branch}"
+	[ -n "${upstream_commit}" ] && ref="${upstream_commit}"
+	[ -n "${ref}" ] && {
+		git checkout -q "${ref}" || die "checkout git repo ${package_name} to ${ref} failed"
+	}
+	filelist=($(git ls-files))
+
+	for pkgfile in "${filelist[@]}"
+	do
+		local dir="SOURCES"
+
+		echo "$pkgfile" | grep -v "\/" | grep -q -E "\\.spec$" && dir="SPECS"
+		mv "$pkgfile" "${rpmdev_dir}/${dir}/"
+	done
+}
+
+add_user_mock()
+{
+	useradd mock
+	useradd mockbuild
+}
+
+install_srpm()
+{
+	add_user_mock
+
+	su lkp -c "rpm -i --noplugins --nosignature ${repo_addr} >/dev/null" || su lkp -c "rpm -i --noplugins --nosignature ${repo_addr}/${upstream_repo} >/dev/null" || die "failed to install source rpm: ${repo_addr}"
+}
+
+build_rpm()
+{
+	export spec_dir="${rpmdev_dir}/SPECS"
+	[ -n "$package_name" ] &&
+		{
+			# HTTP is proxy cache friendly
+			sed -i 's/^\(Source[^ ]*:[ \t]*\)https/\1http/g' "$(grep http -rl "$spec_dir/"*.spec)"
+		}
+	startTime=$(date +%Y-%m-%d-%H:%M)
+	startTime_s=$(date +%s)
+	fix_on_distro
+	[ -n "$depend_upstream_repo" ] && localinstall_dependent_package
+	# Install build dependencies
+	yum-builddep -y "$spec_dir"/*.spec 2>&1 || die "failed to solve dependencies"
+	chown -R lkp:lkp ${rpmdev_dir}
+	# Download tar.gz to default path ${HOME}/rpmbuild/SOURCE
+	[ -n "$package_name" ] &&
+		{
+			su lkp -c "spectool -g -R $spec_dir/"*.spec || die "failed to download source file"
+		}
+	# Build source and binary packages
+	su - lkp -c "rpmbuild -ba --quiet ${spec_dir}/*.spec ${res_rpm_file_exten}" || root_attempt
+	[ $? -ne 0 ] && return 1
+
+	endTime=$(date +%Y-%m-%d-%H:%M)
+	endTime_s=$(date +%s)
+
+	sumTime=$[ $endTime_s - $startTime_s ]
+
+	echo "RPM build START TIME: $startTime, END TIME: $endTime, Total duration: $sumTime seconds"
+	find /${rpmdev_dir}/BUILD/*/ -maxdepth 1 -type d -name "tests" | grep "tests"
+	[ $? = 0 ] && echo "All test cases are passed." && rpmbuild_result=0
+}
+
+root_attempt()
+{
+	cp -r /home/lkp/rpmbuild /root/
+	cd /root/rpmbuild/SPECS
+	#rpmbuild -ba *.spec ${res_rpm_file_exten} || die "failed to build rpms"
+	! rpmbuild -ba *.spec ${res_rpm_file_exten} && echo "failed to build rpms" && return 1
+	rm -rf /home/lkp/rpmbuild
+	cp -r /root/rpmbuild /home/lkp
+	echo "root attempt success"
+}
+
+localinstall_dependent_package()
+{
+	yum install -y wget
+	mkdir /tmp/rpm
+	cd /tmp/rpm
+	wget -c -r -np -nd -R index.html "${SRV_HTTP_PROTOCOL:-https}://${SCHED_HOST}:${SRV_HTTP_RPM_PORT:-20012}$depend_rpm_dest/" || die "failed to download local depend rpms"
+	yum localinstall -y *.rpm || die "failed to local install rpms"
+}
+
+show_rpm_files()
+{
+	find ${rpmdev_dir}/RPMS -type f -name "*.rpm"
+}
+
+show_src_rpm_files()
+{
+	find ${rpmdev_dir}/SRPMS -type f -name "*.src.rpm"
+}
+
+show_spec_file()
+{
+	find ${rpmdev_dir}/SPECS -type f -name "*.spec"
+}
+
+upload_rpm_pkg()
+{
+	local rpm_file
+	for rpm_file in $(show_rpm_files)
+	do
+		upload_one_curl ${rpm_file} ${rpm_dest}
+		[ -n "$pr_merge_reference_name" ] && upload_one_curl ${rpm_file} ${tmp_rpm_dest}
+	done
+
+	local src_rpm_file
+	for src_rpm_file in $(show_src_rpm_files)
+	do
+		upload_one_curl ${src_rpm_file} ${src_rpm_dest}
+	done
+}
+
+upload_spec_file()
+{
+	for spec_file in $(show_spec_file)
+	do
+		upload_one_curl ${spec_file} ${result_root}
+	done
+}
+
+handle_rpm_list()
+{
+	rpm_list=($(show_rpm_files | xargs basename -a))
+	srpm_list=($(show_src_rpm_files | xargs basename -a))
+	full_list=("${rpm_list[@]}" "${srpm_list[@]}")
+
+	for rpm_index in "${!full_list[@]}"
+	do
+		rpm_name="${full_list["${rpm_index}"]}"
+		full_list["${rpm_index}"]="\"/srv${rpm_dest}/${rpm_name}\""
+		[[ ${rpm_name} =~ "src.rpm" ]] && full_list["${rpm_index}"]="\"/srv${src_rpm_dest}/${rpm_name}\""
+	done
+
+	full_list=$(echo "${full_list[@]}" | sed 's; ;,;g')
+}
+
+update_repo_mq()
+{
+	handle_rpm_list
+
+	curl -sS -H 'Content-Type: Application/json' -XPOST "${UPDATE_REPO_HOST}:${UPDATE_REPO_PORT}/upload" \
+		-d "{\"upload_rpms\": ["${full_list}"], \"job_id\": \"${id}\"}"
+}
+
+find_reverse_depends()
+{
+	local j
+	rpm_name=${upstream_repo##*/}
+	for rev_rpm in $(dnf repoquery -q --whatrequires "${rpm_name}")
+	do
+		rev_rpm=${rev_rpm%%:*}
+		rev_rpm=${rev_rpm%-*}
+		reverse_depends[j++]=$rev_rpm
+	done
+}
+
+notify_scheduler_submit()
+{
+	content='{"depend_job_id":"'${id}'","depend_rpm_dest":"'${tmp_rpm_dest}'","reverse_depends":"'${reverse_depends[@]}'"}'
+	curl -sS -XPOST "http://$SCHED_HOST:$SCHED_PORT/rpmbuild/submit_reverse_depend_jobs" -d "$content"
+}
+
+detect_reverse_depends()
+{
+	[ "$upstream_dir" != "openeuler" ] && return
+	find_reverse_depends
+	notify_scheduler_submit
+}
+
+update_srpm_list()
+{
+	srpm=${repo_addr##*/}
+	data="{\"srpms\": [{\"os\": \"${compat_os}\", \"srpm\": \"${srpm}\", \"build_state\": \"1\"}], \"job_id\": \"${id}\", \"type\": \"update\"}"
+
+	curl -sS -H 'Content-Type: Application/json' -XPOST ${SCHED_HOST}:${SCHED_PORT}/repo/set-srpm-info -d "${data}"
+}
+
+build_comment()
+{
+	owner="src-oepkgs"
+	repo_name=${upstream_repo##*/}
+	[ $(arch) == "aarch64" ] && aarch64="yes" || x86_64="yes"
+	[ $1 == "rpmbuild_success" ] && result="SUCCESS" || result="FAILED"
+	result_url="https://api.compass-ci.openeuler.org$result_root/output"
+	result_detail="[report]($result_url)"
+	body="|Arch|Check_Arch|Build_Result|Result_Detail|\n|---|---|---|---|\n|$(arch)|Yes|$result|$result_detail|"
+
+	data='{"access_token": "'$secrets_my_token'", "body": "'$body'"}'
+	[ -n "$pr_num" ] || [ -n "$upstream_commit" ] && [ -n "$secrets_my_token" ] && {
+		curl -sS --header 'Content-Type: application/json;charset=UTF-8' -XPOST "https://gitee.com/api/v5/repos/$owner/$repo_name/commits/$upstream_commit/comments" -d "${data}" > /dev/null
+	}
+	[ -n "$pr_num" ] && [ -n "$secrets_my_token" ] && {
+		curl -sS --header 'Content-Type: application/json;charset=UTF-8' -XPOST "https://gitee.com/api/v5/repos/$owner/$repo_name/pulls/$pr_num/comments" -d '{"access_token": "'$secrets_my_token'", "body": "'$body'"}' >/dev/null
+	}
+}
+
+self_init()
+{
+	# 设置结果文件后缀
+    if [ -n "$res_file_exten" ]; then
+        #echo "[---self-log---]: [${res_file_exten}]"
+        res_rpm_file_exten="--define 'dist ${res_file_exten}'"
+		echo "[---self-log---]: res_rpm_file_exten=[${res_rpm_file_exten}]"
+    else
+        res_rpm_file_exten="";
+    fi
+
+	# 如果需要修复spec，安装specrepair
+	if [ -n "${ai_repair_spec}" ] && [ ${rpmbuild_result} -ne 0 ]; then 
+        echo "[log]-[---self-log---] install ai specrepair ..."
+
+        # 安装ai修复工具
+		pip install specrepair -i http://172.168.131.2:5032/lowinli/devpi/+simple/ --trusted-host 172.168.131.2:5032
+		pip install --upgrade specrepair
+	fi
+}
+
+self_spec_proc() 
+{
+	# 如果上送spec文件，则同步spec文件
+    #echo "[---self-log---]: [${repair_spec}]"
+    if [ -n "${repair_spec}" ]; then
+        new_spec="${repair_dir_src}/SPECS/${repair_spec}"
+	    if [ ! -f ${new_spec} ]; then
+	        echo "[error]-[---self-log---] spec file not exist: ${new_spec}"
+	        exit 1
+	    fi
+		new_spec_name=$(basename ${new_spec})
+
+		rpmdev_spec_dir="${rpmdev_dir}/SPECS"
+		if [[ ${rpmbuild_type} == "srpm" || ${rpmbuild_type} == "local_srpm" ]]; then
+	    	build_spec=$(find ${rpmdev_spec_dir} -name "*.spec");
+			build_spec_nbame=$(basename ${build_spec})
+	    	echo "[---self-log---]: spec[${new_spec}]-[${build_spec}]"
+	    	if [ "${new_spec_name}" != "${build_spec_nbame}" ]; then
+        	    echo "[error]-[---self-log---]: spec not match ...."
+	    	    exit 1
+        	fi
+		fi
+		
+		[ -d ${rpmdev_spec_dir} ] || mkdir -p ${rpmdev_spec_dir}
+        cp ${new_spec} ${rpmdev_spec_dir}/
+
+	    spec_num=$(find ${rpmdev_spec_dir} -type f -name "*.spec" | wc -l)
+	    if [ $spec_num -ne 1 ]; then
+	        echo "[error]-[---self-log---] spec file nums error: ${spec_num}"
+	        exit 1
+	    fi
+    fi
+}
+
+self_()
+{
+	[ -n "$repo_addr" ] || die "repo_addr is empty"
+	
+	if [[ "${repo_addr##*.}" = "rpm" && "${repo_addr}" =~ ^http ]]; then
+		# 源码仓获取
+		install_srpm
+		rpmbuild_type="srpm"
+	elif [[ "${repo_addr##*.}" = "git" ]]; then
+		# git仓库获取
+		clone_srpm
+	else
+	    install_local_srpm
+		rpmbuild_type="local_srpm"
+	fi
+}
+
+# rpm_build_check()
+# 是不是检查spec文件更合适
+self_check()
+{
+    # 检查rpm包是否已经存在了
+    if [ -n "${check_rpm_install}" ] && [ ${check_rpm_install} = 'yes' ]; then
+        if [ -z "$repo_addr" ]; then 
+            echo "[error] [---self-log---]: repo_addr is empty [${repo_addr}], do not check whether it is already installed."
+            return 0
+        fi
+
+        tmp_file="${rpmbuild_result_path}/tmp_file"
+        tmp_rpm_name_version=""
+        tmp_rpm_name=""
+        tmp_rpm_version=""
+        if [[ "${repo_addr##*.}" = "rpm" && "${repo_addr}" =~ ^http ]]; then
+            # 源码仓获取 (带版本)
+            tmp_rpm_name_version=$(echo "${repo_addr}" | awk -F'/' '{print $NF}' | awk -F'-' '{for(i=1;i<NF;i++){printf("%s-",$i)};print ""}' | sed 's/-$//')
+            tmp_rpm_version=$(echo "${tmp_rpm_name_version}" | awk -F'-' '{print $NF}')
+            tmp_rpm_name=${tmp_rpm_name_version%%${tmp_rpm_version}}
+            tmp_rpm_name=${tmp_rpm_name%-}
+        elif [[ "${repo_addr##*.}" = "git" ]]; then
+            # git仓库获取 （不带版本）
+            tmp_rpm_name_version=$(echo "${repo_addr}" | awk -F'/' '{print $NF}' | awk -F'\\.git' '{print $1}')
+            tmp_rpm_name=${tmp_rpm_name_version}
+        else
+            echo "[error] [---self-log---]: repo_addr error [${repo_addr}], do not check whether it is already installed."
+            return 0
+        fi
+        echo "[---self-log---]: [${tmp_rpm_name_version}]-[${tmp_rpm_name}]-[${tmp_rpm_version}]"
+
+        # 查询软件包信息
+        yum info ${tmp_rpm_name} > ${tmp_file} 2>&1
+        echo "---------yum info-----------"
+        cat ${tmp_file}
+        echo "----------------------------"
+
+        if ! grep -q "Name.*:.*${tmp_rpm_name}" ${tmp_file}; then 
+            # 没有匹配到rpm包名称，将进行build
+            echo "[---self-log---]: no match[${tmp_rpm_name_version}], will install "
+            return 0
+        else
+            # 匹配到rpm包名称
+            if [ -n "${tmp_rpm_version}" ]; then 
+                if ! grep -q "Version.*:.*${tmp_rpm_version}" ${tmp_file}; then 
+                    # 没有匹配到对应版本，将进行build
+                    echo "[---self-log---]: match rpm[${tmp_rpm_name}], but no match[${tmp_rpm_name_version}], will install "
+                    return 0
+                fi
+            fi
+        fi
+
+        # if rpm exist, will exit. 
+        echo "[---self-log---]: [${tmp_rpm_name_version}] installed ..."
+        echo "[---self-log---]: success, rpm already installed"
+        exit 0
+    fi
+}
+
+self_cp_file() {
+    [ $# -ne 2 ] && return 1
+    
+    if [ ! -f $1 ]; then 
+        echo "[warn]-[---self-log---] file not exist: [$1]"
+        return 1
+    fi
+
+    echo "[log]-[---self-log---] copy file [$1] to [$2]"
+    cp -f $1 $2
+}
+
+ai_repair_result=1
+rpmbuild_repair_try=1
+rpmbuild_fail_log_name="stderr"
+repair_bak="${repair_dir}/repair-bak"
+repair_work="${repair_dir}/work"
+repair_work_src_spec="${repair_work}/spec-src/"
+repair_work_src_log="${repair_work}/log/"
+repair_work_des_spec="${repair_work}/spec-repair/"
+repair_work_des_sugg="${repair_work}/suggestion/"
+self_ai_repair_one()
+{
+	# 参数：数量
+	#    参数1：源spec文件路径（不包括文件名）
+	#    参数2：源spec文件路名（不包括路径）
+	#    参数3：源log文件路径（不包括文件名）
+	#    参数4：源log文件路名（不包括路径）
+	#    参数5：备份目录（相对于${repair_bak}的路径）
+	#    xxxx
+
+	# 初始化ai修复结果为失败（false）
+	ai_repair_result=1
+
+	[ $# -ne 5 ] && echo "[error]-[---self-log---] self_ai_repair_one arg nums error: [$#]" && exit 1
+
+	paths=(${1} ${3})
+	for path in "${paths[@]}"
+	do
+	    [ ! -d ${path} ] &&  echo "[error]-[---self-log---] dir not exist: [${path}]" && exit 1
+	done
+
+	echo "[log]-[---self-log---] ai repair ..."
+
+	# 准备ai修复工作环境和文件
+	rm -rf ${repair_work}
+	paths=(${repair_work_src_spec} ${repair_work_src_log} ${repair_work_des_spec} ${repair_work_des_sugg})
+	for path in "${paths[@]}"
+	do
+	    mkdir -p ${path}
+	done
+
+	spec_path="$1"
+	spec_name="$2"
+	spec_base_name=$(basename ${spec_name} .spec)
+	log_path="$3"
+	log_name="$4"
+    cp ${spec_path}/${spec_name} ${repair_work_src_spec}/${spec_name}
+	cp ${log_path}/${log_name} ${repair_work_src_log}/${log_name}
+
+	spec_repair_file="${repair_work_des_spec}/${spec_name}"
+	suggestion_file="${repair_work_des_sugg}/${spec_base_name}.ai-repair.txt"
+	ai_log_file="${repair_dir}/ai.log"
+
+	# 调用python脚本，进行ai修复
+	echo  "python3 ${repair_dir}/AiRepairSpec.py ${repair_work_src_spec}/${spec_name} ${repair_work_src_log}/${log_name} ${spec_repair_file} ${suggestion_file} ${ai_log_file}"
+	repair_spec_result=$(python3 ${repair_dir}/AiRepairSpec.py ${repair_work_src_spec}/${spec_name} ${repair_work_src_log}/${log_name} ${spec_repair_file} ${suggestion_file} ${ai_log_file})
+    echo "[log]-[---self-log---] ai repair log: "
+	echo "${repair_spec_result}"
+	repair_spec_result=(${repair_spec_result})
+	repair_spec_result=${repair_spec_result[-1]}
+	echo "[log]-[---self-log---] ai repair result: ${repair_spec_result[-1]}"
+
+    # 备份修复文件
+    repair_bak_dir="${repair_bak}/$5"
+    mkdir -p ${repair_bak_dir}
+	cp -rf ${repair_work}/* ${repair_bak_dir}
+
+    # 检查修复结果
+	if [ ${repair_spec_result[-1]} = "AiRepairSpecResult:[True]" ]; then
+		# 成功-修复spec
+        self_cp_file "${spec_repair_file}" "${rpmdev_dir}/SPECS/"
+		ai_repair_result=0
+	else
+		# 失败
+        echo "[error]-[---self-log---] ai repair spec fail"
+        return 1
+	fi
+}
+
+# 最开始（未npmbuild之前）就ai修复spec
+self_ai_repair_begin() {
+	# before表示构建前修复，all表示构建之前、构建失败都修复
+    if [ "before" != "${ai_repair_spec}" ] && [ "all" != "${ai_repair_spec}" ]; then 
+        echo "[log]-[---self-log---] no need ai repair spec befor rpmbuild"
+        return 0
+    fi
+
+	if [ -z "${repair_spec}" ] || [ -z "${repair_log}" ]; then 
+        echo "[error]-[---self-log---] ai repair spec fail: need spec file[${repair_spec}] and log file[${repair_log}]"
+        exit 1
+    fi
+
+	# 同步spec文件
+	self_spec_proc
+
+	 echo "[log]-[---self-log---] init by ai repair ..."
+
+	# 查询spec文件（限制：仅一个spec文件）
+    spec_path="${rpmdev_dir}/SPECS/"
+    spec_num=$(find ${spec_path} -type f -name "*.spec" | wc -l)
+    if [ $spec_num -ne 1 ]; then
+        echo "[error]-[---self-log---] when ai respair spec: file nums error ${spec_num}"
+        exit 1
+    fi
+
+	# 获取spec文件名
+	spec_name=$(find ${spec_path} -type f -name "*.spec" | awk -F'/' '{printf $NF}')
+    spec_base_name=$(basename ${spec_name} .spec)
+
+	# 日志文件
+	repair_log_path="${repair_dir_src}/LOGS"
+	repair_log_name="${repair_log}"
+	bak_dir_name="repair-init"
+
+	self_ai_repair_one "${spec_path}" "${spec_name}" "${repair_log_path}" "${repair_log_name}" "${bak_dir_name}"
+
+	# 保存备份文件至本地
+	cd ${repair_dir}
+    tar -zcvf ${repair_dir}/repair-init-bak.tar.gz ./repair-bak/${bak_dir_name} 
+	#tar -zcvf ${repair_dir}/repair-init-bak.tar.gz --exclude=repair-init ./repair-bak/
+	cd -
+    upload_one_curl "${repair_dir}/repair-init-bak.tar.gz" ${result_root}
+    upload_one_curl "${repair_dir}/ai.log" ${result_root}
+		
+    # 检查修复结果
+	if [ ${ai_repair_result} -ne 0 ]; then
+		# 失败
+        echo "[error]-[---self-log---] init by ai repair ... fail"
+		exit 1
+	fi
+}
+
+echo "[---self-log---]: [${res_file_exten}]-[${repair_spec}]"
+
+#git_proxy
+add_repo
+yum_repo_retry
+if [ -n "$upstream_repo" ]; then
+	from_git
+else
+    self_check
+    from_srpm
+    self_init
+    self_spec_proc
+fi
+upload_spec_file
+
+# 是否需要提前修复spec
+if [ -n "${ai_repair_spec}" ]; then 
+    self_ai_repair_begin
+fi
+build_rpm
+
+# [ $? = 0 ] && update_srpm_list
+if [ $? = 0 ]; then
+    rpmbuild_result=0
+else
+    # 检查是否需要ai修复spec
+    # 
+    echo "test"
+fi
+
+# 检查是否构建成功
+[ ${rpmbuild_result} -eq 0 ] && update_srpm_list
+
+[ -n "$depend_upstream_repo" ] && exit 0
+#detect_reverse_depends
+if [ -n "$pr_num" ] && [ -n "$secrets_my_token" ];then
+	cd $rpmdev_dir/RPMS/ &&  yum localinstall -y ./*/*
+	[ $? -eq 0 ] && build_comment "rpmbuild_success" && exit
+	[ $? -ne 0 ] && build_comment "rpmbuild_failed" && exit
+fi
+[ -n "$custom_repo_name" ] && upload_rpm_pkg
+[ -n "$custom_repo_name" ] && update_repo_mq
+
+[ -n "$upstream_commit" ] && [ -n "$secrets_my_token" ] && build_comment "rpmbuild_success"
+exit 0

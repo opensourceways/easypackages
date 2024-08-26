@@ -17,7 +17,7 @@ print("Ai repair spec begin ...")
 if len(sys.argv) != 6:
     print('error argumengs num [{}]'.format(len(sys.argv)))
     for i in sys.argv:
-        print(i)
+    print(i)
     sys.exit(1)
 
 if not sys.argv[1].endswith(".spec"):

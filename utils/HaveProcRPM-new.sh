@@ -30,10 +30,10 @@ done
 start_date="2024-08-12"
 
 # os_arch = 2p16g  2288hv3-2s24p-768g--b26
-#os_arch=2288hv3-2s24p-768g--b26
+# os_arch=2288hv3-2s24p-768g--b26
 os_arch=vm-2p16g
 
-# testbox = x86_64  
+# testbox = x86_64   aarch64
 testbox=x86_64
 
 # job日志路径
@@ -72,27 +72,27 @@ fi
 # 备份上次统计的结果文件
 file_date=$(date +"%Y%m%d-%H%M%S")
 old_dir="${RESULT_PATH}/../result_${file_date}"
-mv ${RESULT_PATH} ${old_dir}
+mv "${RESULT_PATH}" "${old_dir}"
 
-mkdir -p ${dir_fail_spec}
-mkdir -p ${dir_fail_log}
+mkdir -p "${dir_fail_spec}"
+mkdir -p "${dir_fail_log}"
 
 # 新建文件
-files=(${res_job_rpm} ${res_proc_ed} ${res_proc_ing} ${res_repeat} ${res_err}  ${rpm_build_succ_file} ${rpm_build_installed_file} ${execute_log})
+files=("${res_job_rpm}" "${res_proc_ed}" "${res_proc_ing}" "${res_repeat}" "${res_err}"  "${rpm_build_succ_file}" "${rpm_build_installed_file}" "${execute_log}")
 for file in "${files[@]}"
 do
-    $(touch ${file}) 
+    touch "${file}"
 done
 
 #---------init file end---------
 
 # 根据源list文件，获取成功的列表（如果源码生成，则表示构建成功）
-while read file; do
+while read -r file; do
     rpm_name=$(echo "$file" | awk -F'/' '{print "/" $NF }')
     if [ -f "${RPM_BUILD_SRC_PATH}${rpm_name}" ]; then
-        echo "${rpm_name}" >> ${rpm_build_succ_file}
+        echo "${rpm_name}" >> "${rpm_build_succ_file}"
     fi
-done < ${LIST_PATH}
+done < "${LIST_PATH}"
 
 end_date=$(date +"%Y-%m-%d")
 end=$(date -d "${end_date}" +%s)
@@ -100,56 +100,54 @@ current=$(date -d "${start_date}" +%s)
 
 log_msg()
 {
-    echo "$@" | tee -a ${execute_log}
+    echo "$@" | tee -a "${execute_log}"
 }
 
 log_msg ""
 log_msg "begin [${start_date}] to [${end_date}] ..."
 log_msg ""
 
-while [ ${current} -le ${end} ]; do
+while [ "${current}" -le "${end}" ]; do
     # 结果路径
     current_date=$(date -d "@${current}" +%Y-%m-%d)
     CURRENT_PATH="${RPM_BUILD_RES_PATH}/${current_date}/${os_arch}/openeuler-24.03-LTS-${testbox}/${testbox}"
     log_msg "[${CURRENT_PATH}] ..."
 
     # 分别对每个job的结果目录进行处理
-    for file_path in $(ls -d ${CURRENT_PATH}/*/ | sort )
+    for file_path in $(find "${CURRENT_PATH}/*/" -type d -maxdepth 1 | sort )
     do
         dir_name=$(basename "${file_path}")
         dir_path="${CURRENT_PATH}/${dir_name}"
 
         # 获取repo_addr，以获取rpm包名
-        rpm_name=$(grep "^repo_addr:"  ${dir_path}/job.yaml | awk -F'/' '{print $NF}')
+        rpm_name=$(grep "^repo_addr:"  "${dir_path}/job.yaml" | awk -F'/' '{print $NF}')
         if [ -z "${rpm_name}" ]; then
-            echo "proc error: rpm name is null [${dir_path}]" >> ${res_err}
+            echo "proc error: rpm name is null [${dir_path}]" >> "${res_err}"
             continue
         fi
 
         # 检查是否属于本list
-        grep -q "/${rpm_name}" ${LIST_PATH}
-        if [ $? -ne 0 ]; then
-            echo "[warn] not belong to this batch: [${rpm_name}}" >> ${res_err}
+        if grep -q "/${rpm_name}" "${LIST_PATH}"; then
+            echo "[warn] not belong to this batch: [${rpm_name}}" >> "${res_err}"
             continue
         fi
 
         # 检查rpm是否在成功清单中
-        grep -q "/${rpm_name}" ${rpm_build_succ_file}
-        if [ $? -ne 0 ]; then
+        if grep -q "/${rpm_name}" "${rpm_build_succ_file}"; then
             # 不在成功清单中
 
             # 检查包是否已经安装（build之前已经存在）
-            if [ -f ${dir_path}/dmesg ] && grep -q -F '[---self-log---]: success, rpm already installed' ${dir_path}/dmesg; then 
-                echo "/${rpm_name}" >> ${rpm_build_installed_file}
+            if [ -f "${dir_path}/dmesg" ] && grep -q -F '[---self-log---]: success, rpm already installed' "${dir_path}/dmesg"; then 
+                echo "/${rpm_name}" >> "${rpm_build_installed_file}"
             else
                 output_file="${dir_path}/output"
                 if [ ! -f "${output_file}" ]; then
                     # 处理中的job， 则跳过
-                    echo "${dir_name} ## ${rpm_name} ## ${dir_path}" >> ${res_proc_ing}
+                    echo "${dir_name} ## ${rpm_name} ## ${dir_path}" >> "${res_proc_ing}"
 
-                    rpm_package_line=$(grep "/${rpm_name}" ${LIST_PATH})
+                    rpm_package_line=$(grep "/${rpm_name}" "${LIST_PATH}")
                     rpm_package_name="Packages/${rpm_package_line##*Packages/}"
-                    echo "${rpm_name}   ${rpm_package_name}" >> ${rpm_build_procing_file}
+                    echo "${rpm_name}   ${rpm_package_name}" >> "${rpm_build_procing_file}"
                     continue
                 fi
             fi
@@ -157,13 +155,13 @@ while [ ${current} -le ${end} ]; do
 
         # 保存记录到已处理文件
         record=${dir_name}' ## '${rpm_name}' ## '${dir_path}
-        if grep -q "## ${rpm_name} ##" ${res_job_rpm}; then
+        if grep -q "## ${rpm_name} ##" "${res_job_rpm}"; then
             # 如果已经存在rpm的记录，则可能是重复提交，删除最开始的记录
-            $(grep "${rpm_name}" ${res_job_rpm} >> ${res_repeat})
-            $(sed "/${rpm_name}/d" ${res_job_rpm} > ${tmp_file} && mv -f ${tmp_file} ${res_job_rpm})
+            grep "${rpm_name}" "${res_job_rpm}" >> "${res_repeat}"
+            sed "/${rpm_name}/d" "${res_job_rpm}" > "${tmp_file}" && mv -f "${tmp_file}" "${res_job_rpm}"
         fi
     
-        echo ${record} >> ${res_job_rpm};
+        echo "${record}" >> "${res_job_rpm}";
     done
 
     # 当前日期下的目录处理完成，下一个日期
@@ -171,49 +169,49 @@ while [ ${current} -le ${end} ]; do
 done
 
 # 对已处理的job进行分析
-while read line; do
-    rpm_name=$(echo ${line} | awk -F' ## ' '{print $2}')
-    echo ${rpm_name} >> ${res_proc_ed}
+while read -r line; do
+    rpm_name=$(echo "${line}" | awk -F' ## ' '{print $2}')
+    echo "${rpm_name}" >> "${res_proc_ed}"
 
-    if grep -q "/${rpm_name}" ${rpm_build_succ_file}; then
+    if grep -q "/${rpm_name}" "${rpm_build_succ_file}"; then
         # 在成功列表中
         continue
-    elif grep -q "/${rpm_name}" ${rpm_build_installed_file}; then 
+    elif grep -q "/${rpm_name}" "${rpm_build_installed_file}"; then 
         # 在已安装列表中
         continue
     else
-        job_id=$(echo ${line} | awk -F' ## ' '{print $1}')
-        file_path=$(echo ${line} | awk -F' ## ' '{print $NF}')
+        #job_id=$(echo ${line} | awk -F' ## ' '{print $1}')
+        file_path=$(echo "${line}" | awk -F' ## ' '{print $NF}')
 
         if [ -e "${file_path}/output" ]; then
             # output文件存在
-            if ls ${file_path} | grep -q '\.spec$'; then 
+            if find "${file_path}" -maxdepth 1 -type f -name "*.spec" > /dev/null; then 
                 # spec文件存在
                 # 保存log、spec文件
-                spec_file_name=$(find ${file_path} -name "*.spec" | awk -F'/' '{print $NF}')
-                spec_name=$(basename ${spec_file_name} .spec)
+                spec_file_name=$(find "${file_path}" -name "*.spec" | awk -F'/' '{print $NF}')
+                spec_name=$(basename "${spec_file_name}" .spec)
 
-                rpm_package_line=$(grep "/${rpm_name}" ${LIST_PATH})
+                rpm_package_line=$(grep "/${rpm_name}" "${LIST_PATH}")
                 rpm_package_name="Packages/${rpm_package_line##*Packages/}"
-                echo "${spec_file_name}   ${rpm_package_name}" >> ${rpm_build_fail_file}
+                echo "${spec_file_name}   ${rpm_package_name}" >> "${rpm_build_fail_file}"
 
-                $(cp ${file_path}/*.spec ${dir_fail_spec}/)
-                $(cp ${file_path}/output ${dir_fail_log}/${spec_name}.log)
+                cp "${file_path}/*.spec" "${dir_fail_spec}"/
+                cp "${file_path}/output" "${dir_fail_log}/${spec_name}.log"
             else 
-                echo "${spec_file_name}   ${rpm_package_name}" >> ${rpm_build_fail_no_spec_file}
-                echo "file not exist: .spec file not exist [${rpm_name}]-[${file_path}]" >> ${res_err}
+                echo "${spec_file_name}   ${rpm_package_name}" >> "${rpm_build_fail_no_spec_file}"
+                echo "file not exist: .spec file not exist [${rpm_name}]-[${file_path}]" >> "${res_err}"
             fi
         fi
     fi
-done < ${res_job_rpm}
+done < "${res_job_rpm}"
 
-total_num=$(sed -n '$=' ${LIST_PATH})
-proc_ed_num=$(sed -n '$=' ${res_proc_ed})
-proc_ing_num=$(sed -n '$=' ${res_proc_ing})
-proc_succ_num=$(ls -lR ${RPM_BUILD_SRC_PATH} | grep "^-" | wc -l)
-proc_succ_num_1=$(sed -n '$=' ${rpm_build_succ_file})
-proc_install_num=$(sed -n '$=' ${rpm_build_installed_file})
-proc_fail_num=$((${proc_ed_num} - ${proc_succ_num_1}))
+total_num=$(sed -n '$=' "${LIST_PATH}")
+proc_ed_num=$(sed -n '$=' "${res_proc_ed}")
+proc_ing_num=$(sed -n '$=' "${res_proc_ing}")
+proc_succ_num=$(find ${RPM_BUILD_SRC_PATH} -maxdepth 1 -type f -name '.src.rpm' | wc -l)
+proc_succ_num_1=$(sed -n '$=' "${rpm_build_succ_file}")
+proc_install_num=$(sed -n '$=' "${rpm_build_installed_file}")
+proc_fail_num=$((proc_ed_num - proc_succ_num_1))
 
 log_msg ""
 log_msg ""

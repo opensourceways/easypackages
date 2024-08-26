@@ -1,6 +1,7 @@
 from specrepair import SpecBot
 import sys
 import os
+
 # 参数说明：specFile
 #   specFilePath：.spec源文件路径，必输
 #   logFilePath：日志文件路径，必输
@@ -52,7 +53,11 @@ for path in arr_path:
         os.makedirs(path)
 
 specbot = SpecBot()
-suggestion, flag = specbot.repair(spec_src_file, log_src_file, spec_repair_file, ai_log_file)
+suggestion, flag = specbot.repair(spec_src_file,
+                                  log_src_file,
+                                  spec_repair_file,
+                                  ai_log_file
+                                  )
 
 # 打开文件用于写入，如果文件不存在则创建
 with open(suggestion_file, 'w') as file:

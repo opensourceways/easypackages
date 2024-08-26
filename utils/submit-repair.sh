@@ -1,4 +1,4 @@
-#! /bin/zsh
+#! /bin/bash
 
 #----------------------------------------------------------------------------------
 # 参数介绍:
@@ -36,7 +36,11 @@ submit_job_inf="-m -c job.yaml -i ssh.yaml"
 # 软件包源码仓库基地址
 repo_base_addr="https://mirrors.huaweicloud.com/fedora/releases/40/Everything/source/tree/"
 
-time=$(date +"%Y-%m-%d")
+# submit最大提交次数
+submit_max_times=5
+
+time=$(date +"%Y%m%d-%H%M%S")
+submit_log_file="log/submit-log-${submit_arch}-${time}"
 
 # 输入参数解析
 param_ai=""
@@ -86,9 +90,14 @@ lkp_repair_dir="${HOME}/lkp-tests/repair-dir/src"
 lkp_repair_spec="${lkp_repair_dir}/SPECS"
 lkp_repair_log="${lkp_repair_dir}/LOGS"
 
+log_msg()
+{
+    echo "$@" | tee -a "${submit_log_file}"
+}
+
 param_check_ai()
 {
-    [ ! -n "${param_ai}" ] && return 0
+    [ -z "${param_ai}" ] && return 0
 
     # 检查参数值
     found=false
@@ -100,13 +109,13 @@ param_check_ai()
     done
 
     if ! $found; then 
-        echo "-a 参数值错误[${param_ai}], 参考值: ${param_reference_value_ai[@]}"
+        echo "-a 参数值错误[${param_ai}], 参考值: ${param_reference_value_ai[*]}"
         exit 1
     fi
 
     # 如果需要先ai修复spec，再rpmbuild （before/all）
     # 则需要指定spec和log
-    if [ "before" = ${param_ai} ] || [ "all" = ${param_ai} ]; then 
+    if [ "before" = "${param_ai}" ] || [ "all" = "${param_ai}" ]; then 
         if [ "spec_log" != "${param_src}" ]; then 
             echo "rpmbuild之前修复，需要指定spec、log：请使用 -s spec_log"
             exit 1
@@ -116,7 +125,7 @@ param_check_ai()
 
 param_check_src()
 {
-    [ ! -n "${param_src}" ] && return 0
+    [ -z "${param_src}" ] && return 0
 
     # 检查参数值
     found=false
@@ -128,12 +137,12 @@ param_check_src()
     done
 
     if ! $found; then 
-        echo "-s 参数值错误[${param_src}], 参考值: ${param_reference_value_src[@]}"
+        echo "-s 参数值错误[${param_src}], 参考值: ${param_reference_value_src[*]}"
         exit 1
     fi
 
     # 如果-s，则需要-d
-    if [ -z ${param_dir} ] || [ ! -d ${param_dir} ]; then
+    if [ -z "${param_dir}" ] || [ ! -d "${param_dir}" ]; then
         echo "[error] option -s, required matching option -d: [${param_dir}] is empty or not exist"
         exit 1
     fi
@@ -142,7 +151,7 @@ param_check_src()
 param_check_list()
 {
     # 需要指定list
-    if [ ! -n "$param_list" ]; then 
+    if [ -z "$param_list" ]; then 
         echo "[error] no option -l"
         exit 1
     fi
@@ -150,12 +159,13 @@ param_check_list()
 
 param_check_other()
 {
-    [ ! -n "${param_other}" ] && return 0
+    [ -z "${param_other}" ] && return 0
 
     # 解析其他参数字段
-    param_other_arr=($(awk -F '+' '{for (i=1; i<=NF; i++) print $i}' <<< "${param_other}"))
+    param_other_arr=()
+    read -ra param_other_arr <<< "${param_other//+/ }"
 
-    echo "拆分其他参数为：${param_other_arr[@]}"
+    echo "拆分其他参数为：${param_other_arr[*]}"
 }
 
 param_check()
@@ -171,43 +181,41 @@ upload_file()
     spec_name=$1
 
     # 初始化lkp目录
-    rm -rf ${lkp_repair_dir}/   
-    mkdir -p ${lkp_repair_dir}/
+    rm -rf "${lkp_repair_dir}"
+    mkdir -p "${lkp_repair_dir}"
 
     if [[ $param_src == *"spec"* ]]; then
         # spec文件必须以.spec结尾
         if [[ $spec_name != *.spec ]]; then
             echo "[error] spec file name error: ${spec_name}"
-	        continue
+	        return 
 	    fi
 
-        [ -d ${lkp_repair_spec} ] || mkdir -p ${lkp_repair_spec}
-        spec_num=$(find ${param_dir} -type f -name "${spec_name}" | wc -l)
-        if [ $spec_num -ne 1 ]; then
+        [ -d "${lkp_repair_spec}" ] || mkdir -p "${lkp_repair_spec}"
+        spec_num=$(find "${param_dir}" -type f -name "${spec_name}" | wc -l)
+        if [ "$spec_num" -ne 1 ]; then
             echo "[error] .spec file num not equals 1: ${spec_num} - ${spec_name}"
-            continue
+            return
         fi
 
         # 同步spec文件
-        $(rm -rf ${lkp_repair_spec}/*)
-        $(find ${param_dir} -type f -name "${spec_name}" -exec cp {} ${lkp_repair_spec}/  \;)
+        find "${param_dir}" -type f -name "${spec_name}" -exec cp {} "${lkp_repair_spec}/"  \;
 
         submit_repair_spec="repair_spec=${spec_name}"
     fi
 
     if [[ $param_src == *"log"* ]]; then 
-        [ -d ${lkp_repair_log} ] || mkdir -p ${lkp_repair_log}
+        [ -d "${lkp_repair_log}" ] || mkdir -p "${lkp_repair_log}"
 
-        spec_basename=$(basename $spec_name .spec)
+        spec_basename=$(basename "$spec_name" .spec)
         log_file_name="${spec_basename}.log"
-        log_num=$(find ${param_dir} -type f -name $log_file_name | wc -l)
-        if [ ${log_num} -ne 1 ]; then 
+        log_num=$(find "${param_dir}" -type f -name "$log_file_name" | wc -l)
+        if [ "${log_num}" -ne 1 ]; then 
             echo "[error] log file num not equals 1: ${log_num} - ${log_file_name}"
-            continue
+            return 
         fi
 
-        $(rm -rf ${lkp_repair_log}/*)
-        $(find ${param_dir} -type f -name "${log_file_name}" -exec cp {} ${lkp_repair_log}/  \;)
+        find "${param_dir}" -type f -name "${log_file_name}" -exec cp {} "${lkp_repair_log}/"  \;
 
         submit_repair_log="repair_log=${log_file_name}"
     fi
@@ -217,14 +225,15 @@ upload_file()
 param_check
 
 # 清空lkp使用空间
-if [ -d ${lkp_repair_dir} ]; then
-    $(rm -rf ${lkp_repair_dir}/*)
+if [ -d "${lkp_repair_dir}" ]; then
+    rm -rf "${lkp_repair_dir}"
 fi
 
-while read line; 
+while read -r line; 
 do
     # 初始化
-    line_array=(${line})
+    line_array=()
+    read -ra line_array <<< "${line}"
     [ ${#line_array[@]} -lt 2 ] && echo "[error] ${line}记录" 
 
     if [ $((${#line_array[@]} - 2)) -lt ${#param_other_arr[@]} ] ; then 
@@ -245,7 +254,7 @@ do
 
     # 需要同步源文件(spec或log文件)
     if [ -n "${param_src}" ]; then 
-        upload_file ${spec_name}
+        upload_file "${spec_name}"
     fi
 
     # 设置其他参数
@@ -259,9 +268,43 @@ do
 
     #echo "${spec_name}-${repo} proc ..."
 
-    commond="submit ${submit_job_inf} repo_addr=${submit_repo_addr} os_arch=${submit_arch} testbox=${submit_testbox} ${submit_repair_spec} ${submit_repair_log} ${submit_ai_repair} ${submit_other} ${submit_other_app_param} | tee -a log/submit-log-${arch}-${time}"
-    echo "${commond}"
-    #${commond}
+    commond="submit ${submit_job_inf} repo_addr=${submit_repo_addr} os_arch=${submit_arch} testbox=${submit_testbox} ${submit_repair_spec} ${submit_repair_log} ${submit_ai_repair} ${submit_other} ${submit_other_app_param} | tee -a ${submit_log_file}"
+    log_msg "${commond}"
+
+    repeat_flag="true"
+    submit_times=1
+    while [ ${submit_times} -le ${submit_max_times} ] && [ "${repeat_flag}" = "true" ]; do
+        log_msg "submit times [${submit_times}]"
+        submit_res=$(submit "${submit_job_inf}" repo_addr="${submit_repo_addr}" os_arch=${submit_arch} testbox=${submit_testbox} "${submit_repair_spec}" "${submit_repair_log}" "${submit_ai_repair}" "${submit_other}" "${submit_other_app_param}")
+        log_msg "${submit_res}"
+        job_id=$(echo "${submit_res[@]}" | grep -o "got job id=.*" | awk -F'=' '{print  $NF}' | awk -F',' '{print $1}')
+        log_msg "job id[${job_id}]"
+        if [ -n "${job_id}" ] && [ "${job_id}" != "0" ]; then 
+            log_msg "[${submit_repo_addr}] submit success.." 
+            repeat_flag=false
+            break
+        fi
+
+        # 如果提交失败，则休眠10秒
+        log_msg "submit fail, will repeat submit. "
+        log_msg "sleep 10 seconds ..."
+        sleep 10
+        
+        ((submit_times++))
+    done
+
+    if [ ${submit_times} -gt ${submit_max_times} ]; then 
+        log_msg "[${submit_repo_addr}] submit fail...[${submit_times}]" 
+    fi
+
+    log_msg "" 
+
+    ((submit_num++))
+    if [[ ${submit_num} != 0 && $((submit_num % 500)) == 0 ]]; then 
+        # 睡眠30分钟，防止当前提交任务抢占机器
+        log_msg "sleep 1800 seconds ..."
+        sleep 1800
+    fi
 
     
-done < ${param_list}
+done < "${param_list}"

@@ -2,7 +2,6 @@ from specrepair import SpecBot
 import sys
 import os
 import shutil
-
 # 参数说明：specFile
 #   specFilePath：.spec源文件路径，必输
 #   logFilePath：日志文件路径，必输
@@ -15,7 +14,7 @@ os.environ['OPENAI_BASE_URL'] = 'xxxxx'
 
 print("Ai repair spec begin ...")
 
-if len(sys.argv) != 5:
+if len(sys.argv) != 6:
     print('error argumengs num [{}]'.format(len(sys.argv)))
     for i in sys.argv:
         print(i)
@@ -45,6 +44,8 @@ spec_repair_path = os.path.dirname(spec_repair_file)
 suggestion_file = sys.argv[4]
 suggestion_path = os.path.dirname(suggestion_file)
 
+#
+ai_log_file = sys.argv[5]
 
 arr_path = [spec_src_path, spec_repair_path, log_src_path, suggestion_path]
 for path in arr_path:
@@ -52,11 +53,7 @@ for path in arr_path:
         os.makedirs(path)
 
 specbot = SpecBot()
-suggestion, flag = specbot.repair(
-    spec_src_file,
-    log_src_file,
-    spec_repair_file
-)
+suggestion, flag = specbot.repair(spec_src_file, log_src_file, spec_repair_file, ai_log_file)
 
 # 打开文件用于写入，如果文件不存在则创建
 with open(suggestion_file, 'w') as file:

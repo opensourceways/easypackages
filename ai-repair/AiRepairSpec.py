@@ -1,7 +1,6 @@
 from specrepair import SpecBot
 import sys
 import os
-import shutil
 # 参数说明：specFile
 #   specFilePath：.spec源文件路径，必输
 #   logFilePath：日志文件路径，必输

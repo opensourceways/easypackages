@@ -18,7 +18,7 @@ if [ -f "$package" ]; then
     #pkg_name=`python match.py $package`
     # 安装 .src.rpm 文件中的构建依赖项
     spectool -g -R "${WORKDIR}/SPECS/$package"
-    if ! sudo dnf builddep -y "${WORKDIR}/SPECS/$package"; then
+    if dnf builddep -y "${WORKDIR}/SPECS/$package"; then
         echo "$(basename "$package") builddep 成功"
     else
         echo "$(basename "$package") builddep 失败"
@@ -26,7 +26,7 @@ if [ -f "$package" ]; then
     fi
     # 编译构建软件包
     
-    if ! rpmbuild -ba "${WORKDIR}/SPECS/$package"; then
+    if rpmbuild -ba "${WORKDIR}/SPECS/$package"; then
         echo "$(basename "$package") 编译构建软件包成功"
     else
         echo "$(basename "$package") 编译构建软件包失败"

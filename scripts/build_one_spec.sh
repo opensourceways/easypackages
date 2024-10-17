@@ -25,7 +25,6 @@ if [ -f "$package" ]; then
         exit 1
     fi
     # 编译构建软件包
-    
     if rpmbuild -ba "${WORKDIR}/SPECS/$package"; then
         echo "$(basename "$package") 编译构建软件包成功"
     else

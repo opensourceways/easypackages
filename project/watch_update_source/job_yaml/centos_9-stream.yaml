@@ -1,0 +1,10 @@
+suite: rpmbuild-watch-update
+category: functional
+rpmbuild:
+group_id: rpmbuild-watch-update
+custom_repo_name: centos9
+mount_repo_addr: https://api.compass-ci.openeuler.org:20018/rpm/testing/openeuler-24.03-LTS/centos9/\$basearch
+mount_repo_name: centos9
+os: openeuler
+os_version: 24.03-LTS
+runtime: 1d

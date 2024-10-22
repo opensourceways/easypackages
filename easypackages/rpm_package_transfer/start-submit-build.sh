@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# 这个脚本最好在 tmux 上执行，防止中断
 rpm_src_list=rpm_next_iterate_list.txt
 aarch_type=aarch64
 job_config=job-centos9.yaml

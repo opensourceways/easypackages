@@ -369,6 +369,7 @@ init()
     project_log_file="${submit_log_dir}/submit-log"
     submit_succ_list="${submit_log_dir}/submit-succ-list"
     submit_fail_list="${submit_log_dir}/submit-fail-list"
+    result_root_list="${submit_log_dir}/result_root_list"
     
     log_msg "[log] log path: ${project_log_file}"
     log_msg ""
@@ -448,6 +449,7 @@ do
         echo "${submit_res}"
         job_id=$(echo "${submit_res[@]}" | grep -o "got job id=.*" | awk -F'=' '{print  $NF}' | awk -F',' '{print  $1}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
         result_root=$(echo "${submit_res[@]}" | grep -o "result_root.*" | awk -F'result_root' '{print  $NF}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        [ -n "${result_root}" ] && echo "${result_root}" >> "${result_root_list}"
         log_msg "job id[${job_id}]"
         if [ -n "${job_id}" ] && [ "${job_id}" != "0" ] && [[ "${job_id}" =~ ^z9. ]]; then 
             log_msg "[${submit_repo_addr}] submit success.." 

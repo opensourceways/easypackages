@@ -80,32 +80,30 @@ filter_src_rpm_by_file "${rpm_src_list}" "${rpm_src_history_list}"
 while read -r line; do
     line_arr=()
     read -ra line_arr <<< "${line}"
-    #echo "${line_arr[1]} ${line_arr[2]}"
 
-    # 过滤出需要构建的aarch64、x86_64的包
-    for aarch_type in "${arch_type_arr[@]}"; do
-        if [ -f "${rpm_install_list}_${aarch_type}" ] && grep -q -F "${line_arr[1]} ${line_arr[2]}" "${rpm_install_list}_${aarch_type}"; then 
-            continue
-        fi
+    if [ -f "${rpm_install_list}" ] && grep -q -F "${line_arr[1]} ${line_arr[2]}" "${rpm_install_list}"; then 
+        continue
+    fi
 
-        echo "$line" >> "${rpm_src_list}_${aarch_type}"
-    done
+    echo "$line" >> "${rpm_src_list}_tmp"
 done < "${rpm_src_list}"
+
+mv "${rpm_src_list}_tmp" "${rpm_src_list}"
 
 # 日志文件
 time=$(date +"%Y%m%d-%H%M%S")
 
 # 如果历史文件不存在，则第一次作为铺数据（避免大批量提交）
-if [ ! -f "${rpm_src_history_list}" ]; then
+if [ -f "${rpm_src_history_list}" ]; then
     # 提交任务
     #arch_type_arr=("aarch64")
     for aarch_type in "${arch_type_arr[@]}"; do
-        if [ -f "${rpm_src_list}_${aarch_type}" ]; then 
+        if [ -f "${rpm_src_list}" ]; then 
             submit_log_dir="${RPM_WATCH_PROJECT_LOG_PATH}/submit-log-${src_os_name}_${src_os_version}_${aarch_type}-${time}"
             log_msg "[log] submit log path : ${submit_log_dir}"
 
             command="sh ../utils/submit-repair.sh \
-                    -l ${rpm_src_list}_${aarch_type} \
+                    -l ${rpm_src_list} \
                     -h ${aarch_type} \
                     -t vm-2p8g \
                     -p check_rpm_install=yes \

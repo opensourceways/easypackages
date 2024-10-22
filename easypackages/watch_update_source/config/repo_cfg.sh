@@ -1,26 +1,10 @@
 #!/bin/bash
 
-# shellcheck disable=SC2034
-binary_xml_url_aarch64_openeuler_24_03_LTS=(
-    "https://repo.openeuler.org/openEuler-24.03-LTS/everything/aarch64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/EPOL/main/aarch64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/update/aarch64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/OS/aarch64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/debuginfo/aarch64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/source/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/update/source/repodata/repomd.xml"
-    "https://repo.oepkgs.net/openEuler/rpm/openEuler-24.03-LTS/fedora40/aarch64/repodata/repomd.xml"
-)
-
-binary_xml_url_x86_64_openeuler_24_03_LTS=(
-    "https://repo.openeuler.org/openEuler-24.03-LTS/EPOL/main/x86_64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/OS/x86_64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/everything/x86_64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/debuginfo/x86_64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/update/x86_64/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/source/repodata/repomd.xml"
-    "https://repo.openeuler.org/openEuler-24.03-LTS/update/source/repodata/repomd.xml"
-    "https://repo.oepkgs.net/openEuler/rpm/openEuler-24.03-LTS/fedora40/x86_64/repodata/repomd.xml"
+binary_xml_url_openeuler_24_03_LTS=(
+    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/EPOL/main/source/repodata/repomd.xml"
+    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/EPOL/update/main/source/repodata/repomd.xml"
+    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/source/repodata/repomd.xml"
+    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/update/source/repodata/repomd.xml"
 )
 
 src_xlm_url_centos_9=(

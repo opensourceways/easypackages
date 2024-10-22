@@ -185,69 +185,6 @@ download_primary_xml_by_repomdxml()
     cd "$ori_work_path" || exit 1
 }
 
-
-#-------------------------------------------------------------------------------
-# 功能描述：
-#       1、遍历argu_urls_arr（rpm二进制包仓库地址数组）；
-#       2、根据仓库地址生成二进制包列表（格式：rpm_name rpm_version）
-#
-# 参    数：
-#       1、$1：文件保存路径
-#       2、$2：list文件名
-#       3、$3: 架构类型
-#       4、$4: 仓库地址("url1 url2 ...")
-#
-# 说    明：
-#       1、下载的元素数据文件会保存到 $1/work中
-#-------------------------------------------------------------------------------
-download_binary_primary_xml()
-{
-    file_save_path="$1"
-    list_file_name="$2"
-    arch_type="$3"
-    src_xlm_urls=()
-    read -ra src_xlm_urls <<< "$4"
-
-    log_msg "${src_xlm_urls[@]}"
-    if [ 0 -eq "${#src_xlm_urls[@]}" ]; then
-        log_msg "[error] src_xlm_urls is empty"
-    fi
-
-    list_file="${file_save_path}/${list_file_name}"
-    true > "${list_file}"
-
-    local ori_work_path
-    ori_work_path=$(pwd)
-
-    xml_save_path="${file_save_path}/work"
-    if [ ! -d "${xml_save_path}" ]; then
-        mkdir -p "${xml_save_path}/"
-        chmod 775 "${xml_save_path}/"
-    else 
-        rm -rf "${xml_save_path}"/*-primary.xml*
-    fi
-
-    for url in "${src_xlm_urls[@]}"
-    do
-        if [ -z "${url}" ]; then 
-            continue
-        fi
-
-        download_primary_xml_by_repomdxml "${url}" "${xml_save_path}"
-        
-    done
-
-    cd "${ori_work_path}" || exit 1
-    log_msg ""
-    res_msg=$(python3 ./../utils/getRpmBinaryList.py -lf "${list_file}" -xp "${xml_save_path}" -arch "${arch_type}")
-    #echo "${res_msg[@]}"
-    res_stat=$(echo "${res_msg[@]}" | grep -o "SUCCESS NOW")
-    if [ -z "${res_stat}" ]; then
-        log_msg "[error] getRpmBinaryList.py fail: ${res_msg[*]}"
-        exit 1
-    fi
-}
-
 #-------------------------------------------------------------------------------
 # 功能描述：
 #       1、遍历arpm源码仓库地址；

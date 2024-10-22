@@ -1,5 +1,10 @@
 #!/bin/bash
+
 # 检查是否传递了参数
+# 输入：result_root path文件路径
+# 输出：result_root path同级目录下生成result.log文件、成功的repo文件result_succ_list、失败的repo文件result_fail_list
+# ex ： sh log_analysis.sh pipy_job_result/submit-log-20241014/result_root_list
+
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <file_path>"
     exit 1

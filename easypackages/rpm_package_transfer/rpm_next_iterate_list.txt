@@ -1,0 +1,10 @@
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rmol-1.00.11-1.el9.next.src.rpm rmol-1.00.11-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-0.79.0-2.el9.next.src.rpm rust-cargo-0.79.0-2.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-c-0.9.32-1.el9.next.src.rpm rust-cargo-c-0.9.32-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-credential-0.4.6-1.el9.next.src.rpm rust-cargo-credential-0.4.6-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-credential-libsecret-0.4.6-1.el9.next.src.rpm rust-cargo-credential-libsecret-0.4.6-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-util-0.2.13-1.el9.next.src.rpm rust-cargo-util-0.2.13-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-cargo-util-schemas-0.3.1-1.el9.next.src.rpm rust-cargo-util-schemas-0.3.1-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-crates-io-0.40.3-1.el9.next.src.rpm rust-crates-io-0.40.3-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/r/rust-fd-find-10.1.0-1.el9.next.src.rpm rust-fd-find-10.1.0-1.el9.next.src.rpm
+https://dl.fedoraproject.org/pub/epel/next/9/Everything/source/tree/Packages/t/trademgen-1.00.11-1.el9.next.src.rpm trademgen-1.00.11-1.el9.next.src.rpm

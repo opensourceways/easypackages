@@ -1,8 +1,9 @@
-import schedule
+import os
 import subprocess
 import time
-import os
-import sh
+
+import schedule
+
 
 def check_process_running(script_name):
     try:
@@ -26,11 +27,11 @@ def run_shell_script():
         except subprocess.CalledProcessError as e:
             print(f"Script failed with error: {e}")
     else:
-        print(f"Script {script_name} is still running, skipping this execution.")
+        print(f"Script {script_name} is still running,"
+              f" skipping this execution.")
 
 
-
-schedule.every(5).seconds.do(run_shell_script)  # 每天上午0点执行
+schedule.every(5).seconds.do(run_shell_script)
 
 while True:
     schedule.run_pending()

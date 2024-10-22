@@ -1,0 +1,13 @@
+1、项目介绍
+    项目名称：监视rpm包源仓库更新
+
+2、目录结构
+--config：配置目录
+    |--repo_cfg.sh  : 指定rpm包的repo源（指定repomd.xml地址）
+--data
+    |--os  : 每个系统的临时数据，以及备份数据
+    |--data  : 历史数据
+--job_yaml  : 存放提交compass ci任务的配置文件
+--lib  : 接口
+--task  : 任务
+--utils  : 工具

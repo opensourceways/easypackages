@@ -1,9 +1,7 @@
 import os
-import re
 import sys
 import argparse
 
-sys.path.append('../')
 from lib import lib_py_rpm
 
 '''
@@ -18,9 +16,7 @@ from lib import lib_py_rpm
         文 件 名: （输入指定）
         文件内容: （源码包仓库地址 源码包名 源码包版本）
             repo_addr rpm_name rpm_version
-        样    例: 
-                https://dl.fedoraproject.org/pub/epel/testing/next/9/Everything/source/tree/repodata/Packages/r/rust-cargo-util-0.2.14-1.el9.next.src.rpm rust-cargo-util 0.2.14
-                https://dl.fedoraproject.org/pub/epel/testing/next/9/Everything/source/tree/repodata/Packages/r/rust-crates-io-0.40.4-1.el9.next.src.rpm rust-crates-io 0.40.
+        样    例:
 '''
 
 if __name__ == '__main__':
@@ -38,7 +34,7 @@ if __name__ == '__main__':
         if not os.path.isfile(list_file):
             print(f"list file is not file: {list_file}")
             sys.exit(1)
-            
+
     res = lib_py_rpm.get_src_rpm_list_by_primary_xml(primary_xml, repo_base)
     if res is None:
         print("FAIL NOW")

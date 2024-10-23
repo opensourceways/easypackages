@@ -1,7 +1,12 @@
 import os
 import xml.etree.ElementTree as ET
 
-def get_src_rpm_list_by_primary_xml(xml_file: str, repo_base: str): 
+
+def get_repomd_xml_label(label_name: str):
+    return '{http://linux.duke.edu/metadata/common}' + label_name
+
+
+def get_src_rpm_list_by_primary_xml(xml_file: str, repo_base: str):
     rpm_arr = []
     # 检查元数据文件
     if os.path.exists(xml_file):
@@ -12,18 +17,22 @@ def get_src_rpm_list_by_primary_xml(xml_file: str, repo_base: str):
         print(f"[error] primary xml file is not exist: {xml_file}")
         return None
 
-    if not xml_file.endswith('-primary.xml') :
+    if not xml_file.endswith('-primary.xml'):
         print(f"[error] list file is not endswith -primary.xml: {xml_file}")
         return None
-    
+
     # 解下xmL文件
     tree = ET.parse(xml_file)
     root = tree.getroot()
-    for package in root.findall('{http://linux.duke.edu/metadata/common}package'):
-         # 处理xml文件中单个package
-        name = package.find('{http://linux.duke.edu/metadata/common}name').text.strip()
-        version = package.find('{http://linux.duke.edu/metadata/common}version').get('ver').strip()
-        location_href = package.find('{http://linux.duke.edu/metadata/common}location').get('href').strip()
+    root_package = root.findall(get_repomd_xml_label('package'))
+    for package in root_package:
+        # 处理xml文件中单个package
+        name = package.find(
+            get_repomd_xml_label('name')).text.strip()
+        version = package.find(
+            get_repomd_xml_label('version')).get('ver').strip()
+        location_href = package.find(
+            get_repomd_xml_label('location')).get('href').strip()
 
         repo_addr = repo_base + '/' + location_href
         record_tmp = repo_addr + ' ' + name + ' ' + version
@@ -32,7 +41,7 @@ def get_src_rpm_list_by_primary_xml(xml_file: str, repo_base: str):
     return rpm_arr
 
 
-def get_rpm_binary_List_by_primary_xml(xml_path: str, arch_type: str): 
+def get_rpm_binary_List_by_primary_xml(xml_path: str, arch_type: str):
     rpm_arr = []
 
     # 检查元数据文件
@@ -43,20 +52,24 @@ def get_rpm_binary_List_by_primary_xml(xml_path: str, arch_type: str):
     else:
         print(f"[error] xml dir path is not exist: {xml_path}")
         return None
-    
+
     for file_name in os.listdir(xml_path):
-        if not file_name.endswith('-primary.xml') :
+        if not file_name.endswith('-primary.xml'):
             continue
-        
+
         # 解下xmL文件
         file_path = os.path.join(xml_path, file_name)
         tree = ET.parse(file_path)
         root = tree.getroot()
-        for package in root.findall('{http://linux.duke.edu/metadata/common}package'):
-             # 处理xml文件中单个package
-            name = package.find('{http://linux.duke.edu/metadata/common}name').text.strip()
-            version = package.find('{http://linux.duke.edu/metadata/common}version').get('ver').strip()
-            arch = package.find('{http://linux.duke.edu/metadata/common}arch').text.strip()
+        root_package = root.findall(get_repomd_xml_label('package'))
+        for package in root_package:
+            # 处理xml文件中单个package
+            name = package.find(
+                get_repomd_xml_label('name')).text.strip()
+            version = package.find(
+                get_repomd_xml_label('version')).get('ver').strip()
+            arch = package.find(
+                get_repomd_xml_label('arch')).text.strip()
 
             if arch in [arch_type, 'noarch']:
                 record_tmp = name + ' ' + version + ' ' + arch

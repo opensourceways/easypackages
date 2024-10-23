@@ -1,10 +1,12 @@
 #!/bin/bash
 
-binary_xml_url_openeuler_24_03_LTS=(
-    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/EPOL/main/source/repodata/repomd.xml"
-    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/EPOL/update/main/source/repodata/repomd.xml"
-    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/source/repodata/repomd.xml"
-    "https://mirrors.huaweicloud.com/openeuler/openEuler-24.03-LTS/update/source/repodata/repomd.xml"
+# shellcheck disable=SC2034
+src_xml_url_openeuler_24_03_LTS=(
+    "https://mirrors.163.com/openeuler/openEuler-24.03-LTS/EPOL/main/source/repodata/repomd.xml"
+    "https://mirrors.163.com/openeuler/openEuler-24.03-LTS/EPOL/update/main/source/repodata/repomd.xml"
+    "https://mirrors.163.com/openeuler/openEuler-24.03-LTS/source/repodata/repomd.xml"
+    "https://mirrors.163.com/openeuler/openEuler-24.03-LTS/update/source/repodata/repomd.xml"
+    "https://repo.oepkgs.net/openEuler/rpm/openEuler-24.03-LTS/fedora40/source/repodata/repomd.xml"
 )
 
 src_xlm_url_centos_9=(

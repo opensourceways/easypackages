@@ -55,14 +55,17 @@ log_msg "rpm watch task start: ${time}"
 log_msg ""
 
 # 生成openeuler的清单
-src_xml_urls=$(printf "%s " "${binary_xml_url_openeuler_24_03_LTS[@]}")
+# shellcheck disable=SC2154
+src_xml_urls=$(printf "%s " "${src_xml_url_openeuler_24_03_LTS[@]}")
 sh sub_task_proc_des_os_rpm_list.sh "openeuler" "24_03_LTS" "${src_xml_urls}"
 
 
 # centos9的源监控
+# shellcheck disable=SC2154
 src_xml_urls=$(printf "%s " "${src_xlm_url_centos_9[@]}")
 sh sub_task_proc_update_rpm.sh "centos" "9-stream" "openeuler" "24_03_LTS" "${src_xml_urls}"
 
 # fedora40的源监控
+# shellcheck disable=SC2154
 src_xml_urls=$(printf "%s " "${src_xlm_url_fedora_40[@]}")
 sh sub_task_proc_update_rpm.sh "fedora" "40" "openeuler" "24_03_LTS" "${src_xml_urls}"

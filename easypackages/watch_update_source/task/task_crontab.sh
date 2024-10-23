@@ -54,15 +54,10 @@ log_msg "-------------------------------------------------------"
 log_msg "rpm watch task start: ${time}"
 log_msg ""
 
-# 生成openeuler的二进制清单
+# 生成openeuler的清单
 # shellcheck disable=SC2154
-src_xml_urls=$(printf "%s " "${binary_xml_url_aarch64_openeuler_24_03_LTS[@]}")
-sh sub_task_proc_des_os_rpm_list.sh "openeuler" "24_03_LTS" "aarch64" "${src_xml_urls}"
-
-# shellcheck disable=SC2154
-src_xml_urls=$(printf "%s " "${binary_xml_url_x86_64_openeuler_24_03_LTS[@]}")
-sh sub_task_proc_des_os_rpm_list.sh "openeuler" "24_03_LTS" "x86_64" "${src_xml_urls}"
-
+src_xml_urls=$(printf "%s " "${src_xml_url_openeuler_24_03_LTS[@]}")
+sh sub_task_proc_des_os_rpm_list.sh "openeuler" "24_03_LTS" "${src_xml_urls}"
 
 
 # centos9的源监控

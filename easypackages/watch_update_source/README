@@ -11,3 +11,8 @@
 --lib  : 接口
 --task  : 任务
 --utils  : 工具
+
+rpm包源仓库更新镜像制作、容器启动（需要基于在Z9环境制作）
+1.在Dockerfile当前目录下执行命令：/usr/bin/docker build -t openeuler-package-migration-update .
+2.调用star_container.sh脚本启动容器（某些挂载路径需要根据自己需求进行更改）
+

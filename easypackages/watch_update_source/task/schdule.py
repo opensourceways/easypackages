@@ -31,7 +31,7 @@ def run_shell_script():
               f" skipping this execution.")
 
 
-schedule.every(5).seconds.do(run_shell_script)
+schedule.every(1).minutes.do(run_shell_script)
 
 while True:
     schedule.run_pending()

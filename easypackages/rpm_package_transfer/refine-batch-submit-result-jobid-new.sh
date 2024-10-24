@@ -11,7 +11,7 @@
 #
 # 自定义参数：
 #   RPMBUILD_SUCC_FLAG: rpmbuild构建成功标志（output文件中）
-#   RPMBUILD_INSTALL_SUCC_FLAG: rpm构建-安装成功标志
+#   RPMBUILD_INSTALL_FAIL_FLAG: rpm构建-安装失败标志
 #   RPMBUILD_INSTALL_FLAGED: rpm包已安装标志
 #----------------------------------------------------------------------------------
 
@@ -22,9 +22,8 @@ RPM_BUILD_RES_PATH=""
 
 # 参数说明，请见以上 “自定义参数” 说明部分
 RPMBUILD_SUCC_FLAG="rpmbuild success"
-RPMBUILD_INSTALLED_FLAG="[---self-log---]: success, rpm already installed"
-
-RPMBUILD_INSTALL_SUCC_FLAG="success local install rpms"
+RPMBUILD_INSTALLED_FLAG="[log] success, rpm already installed"
+RPMBUILD_INSTALL_FAIL_FLAG="fail to local install rpms"
     
 
 while getopts ":l:j:o:r:" opt;
@@ -194,12 +193,12 @@ do
         #fi
         echo "${rpm_name}" >> "${rpm_build_succ_file}"
         
-        if grep -q "${RPMBUILD_INSTALL_SUCC_FLAG}" "${job_log_path}/output"; then 
-            # 安装成功
-            echo "${rpm_name}" >> "${rpm_build_install_succ_file}"
-        else
+        if grep -q "${RPMBUILD_INSTALL_FAIL_FLAG}" "${job_log_path}/output"; then
             # 安装失败
             echo "${rpm_name}" >> "${rpm_build_s_install_f_file}"
+        else
+            # 安装成功
+            echo "${rpm_name}" >> "${rpm_build_install_succ_file}"
         fi
     elif [ -f "${job_log_path}/dmesg" ] && grep -q -F "${RPMBUILD_INSTALLED_FLAG}" "${job_log_path}/dmesg"; then
         #if ! grep -q "${rpm_name_no_exten}" "${rpm_build_installed_file}"; then 

@@ -1,0 +1,13 @@
+suite: rpmbuild-pypi
+category: functional
+rpmbuild:
+group_id: rpmbuild-pypi
+custom_repo_name: ai
+mount_repo_addr: https://api.compass-ci.openeuler.org:20018/rpm/testing/openeuler-24.03-LTS/ai/\$basearch
+mount_repo_name: ai
+os: openeuler
+os_version: 24.03-LTS
+os_arch: aarch64
+api_key: xxx(替换真实的OPEN AI KEY)
+base_url: xxx(替换真实的OPEN AI URL)
+runtime: 1d

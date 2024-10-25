@@ -31,7 +31,8 @@ def run_shell_script():
               f" skipping this execution.")
 
 
-schedule.every(1).minutes.do(run_shell_script)
+# 每天凌晨两点执行task_crontab任务
+schedule.every().day.at("02:00").do(run_shell_script)
 
 while True:
     schedule.run_pending()

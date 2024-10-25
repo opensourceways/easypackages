@@ -8,6 +8,7 @@ mount_repo_name: ai
 os: openeuler
 os_version: 24.03-LTS
 os_arch: aarch64
+rpmbuild_type: pypi
 api_key: xxx(替换真实的OPEN AI KEY)
 base_url: xxx(替换真实的OPEN AI URL)
 runtime: 1d

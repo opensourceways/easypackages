@@ -8,4 +8,6 @@ mount_repo_name: autospec-mv
 os: openeuler
 os_version: 24.03-LTS
 runtime: 1d
+rpmbuild_type: srpm
+# 用于进入执行机器调试才会用到sleep这个参数
 sleep: 1h

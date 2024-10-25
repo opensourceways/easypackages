@@ -17,7 +17,7 @@
 source ./../lib/lib_rpm.sh
 source ./../config/repo_cfg.sh
 
-export RPM_WATCH_PROJECT_PATH="${HOME}/rpmbuild/watch_update_source"
+export RPM_WATCH_PROJECT_PATH="${HOME}/easypackages/easypackages/watch_update_source"
 
 export RPM_WATCH_PROJECT_DATA_OS_PATH="${RPM_WATCH_PROJECT_PATH}/data/os"
 export RPM_WATCH_PROJECT_DATA_DATA_PATH="${RPM_WATCH_PROJECT_PATH}/data/data"

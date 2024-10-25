@@ -1,8 +1,8 @@
 #!/bin/bash
 # 这个脚本最好在 tmux 上执行，防止中断
-rpm_src_list=rpm_next_iterate_list.txt
+rpm_src_list=project_names_100.txt
 aarch_type=aarch64
-job_config=job-centos9.yaml
+job_config=job-pypi.yaml
 # 需要创建一个本地执行文件的目录
 submit_log_dir=submit-log-"$(date +"%Y%m%d-%H%M%S")"
 

@@ -43,17 +43,11 @@ do
     repo_name=$(grep "^repo_addr:" "${job_result_path}/job.yaml" | awk '{print $2}')
     output=$(find "${job_result_path}" -maxdepth 1 -name "output")
     if [ -n "$output" ]; then
-	      mapfile -t found_files < <(find . -type f \( -iname '*readme*.md' -o -iname '*readme*.MD' \))
-        if [ ${#found_files[@]} -gt 0 ]; then
-            echo "HAS README" >> "${result_log_path}"
-        else
-            echo "NOT README" >> "${result_log_path}"
+        if grep -q "Errors during downloading metadata for repository 'OS'" "$output"; then
+            ((repo_503_num++))
+            continue;
         fi
-	      if grep -q "Errors during downloading metadata for repository 'OS'" "$output"; then
-		        ((repo_503_num++))
-		        continue;
-	      fi
-	      git_url=$(grep "git clone" "${job_result_path}/dmesg" | awk -F'git clone' '{print "git clone" $2}')
+        git_url=$(grep "git clone" "${job_result_path}/dmesg" | awk -F'git clone' '{print "git clone" $2}')
         echo "source_code_path:$git_url" >> "${result_log_path}"
         if grep -q "rpmbuild success" "$output"; then
 	          if ! grep -q "fail to local install rpms" "$output"; then

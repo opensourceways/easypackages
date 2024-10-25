@@ -61,7 +61,7 @@ submit_other_app_param=""
 submit_job_inf=""
 repo_base_addr=""
 submit_log_dir=""
-sleep_time=1800
+sleep_time=7200
 
 # submit最大提交次数
 submit_max_times=5

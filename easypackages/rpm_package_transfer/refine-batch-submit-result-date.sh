@@ -26,7 +26,7 @@ DATE_END=""
 
 # 参数说明，请见以上 “自定义参数” 说明部分
 RPMBUILD_SUCC_FLAG="All test cases are passed."
-RPMBUILD_INSTALL_FLAG="[---self-log---]: success, rpm already installed"
+RPMBUILD_INSTALL_FLAG="[log] success, rpm already installed"
 
 # source_list
 LIST_PATH=""

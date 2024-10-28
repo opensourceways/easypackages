@@ -21,7 +21,7 @@ RPM_BUILD_RES_PATH=""
 
 # 参数说明，请见以上 “自定义参数” 说明部分
 RPMBUILD_SUCC_FLAG="All test cases are passed."
-RPMBUILD_INSTALL_FLAG="[---self-log---]: success, rpm already installed"
+RPMBUILD_INSTALL_FLAG="[log] success, rpm already installed"
 
 while getopts ":l:j:o:r:" opt;
 do

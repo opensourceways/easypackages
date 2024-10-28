@@ -1,7 +1,6 @@
 #! /bin/bash
 
-# shellcheck disable=SC1091
-source ./../lib/lib_rpm.sh
+#source ./../lib/lib_rpm.sh
 
 #----------------------------------------------------------------------------------
 # 参数介绍:
@@ -61,7 +60,7 @@ submit_other_app_param=""
 submit_job_inf=""
 repo_base_addr=""
 submit_log_dir=""
-sleep_time=7200
+sleep_time=86400
 
 # submit最大提交次数
 submit_max_times=5
@@ -141,6 +140,24 @@ lkp_repair_dir="${HOME}/lkp-tests/repair-dir/src"
 lkp_repair_spec="${lkp_repair_dir}/SPECS"
 lkp_repair_log="${lkp_repair_dir}/LOGS"
 lkp_repair_mapping_dir="${lkp_repair_dir}/rpm-mapping"
+
+
+log_msg()
+{
+    if [ -z "${project_log_file}" ]; then 
+        echo "$@"
+    else
+        if [ ! -f "${project_log_file}" ]; then
+            log_file_path=$(dirname "${project_log_file}")
+            if [ ! -d "${log_file_path}" ]; then
+                mkdir -p "${log_file_path}"
+                chmod 775 "${log_file_path}"
+            fi
+        fi
+
+        echo "$@" | tee -a "${project_log_file}"
+    fi
+}
 
 # ai参数检查
 param_check_ai()
@@ -442,16 +459,15 @@ do
     repeat_flag="true"
     submit_times=1
     job_id=""
-    result_root=""
     while [ ${submit_times} -le ${submit_max_times} ] && [ "${repeat_flag}" = "true" ]; do
         log_msg "submit times [${submit_times}]"
         submit_res=$(bash -c "${commond}")
         echo "${submit_res}"
-        job_id=$(echo "${submit_res[@]}" | grep -o "got job id=.*" | awk -F'=' '{print  $NF}' | awk -F',' '{print  $1}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        result_root=$(echo "${submit_res[@]}" | grep -o "result_root.*" | awk -F'result_root' '{print  $NF}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        [ -n "${result_root}" ] && echo "${result_root}" >> "${result_root_list}"
+        job_id=$(echo "${submit_res[@]}" | grep -o "got job id=.*" | awk -F'=' '{print  $NF}' | awk -F',' '{print $1}')
+        result_root=$(echo "${submit_res[@]}" | grep "result_root" | awk -F'result_root ' '{print $2}')
         log_msg "job id[${job_id}]"
-        if [ -n "${job_id}" ] && [ "${job_id}" != "0" ] && [[ "${job_id}" =~ ^z9. ]]; then 
+        [ -n "${result_root}" ] && echo "${result_root}" >> "${result_root_list}"
+        if [ -n "${job_id}" ] && [ "${job_id}" != "0" ]; then 
             log_msg "[${submit_repo_addr}] submit success.." 
             repeat_flag=false
             break
@@ -468,15 +484,15 @@ do
     if [ ${submit_times} -gt ${submit_max_times} ]; then 
         log_msg "[${submit_repo_addr}] submit fail...[${submit_times}]" 
         src_name=$(echo "${repo}" | awk -F'/' '{print $NF}')
-        echo "${repo} ${src_name}" >> "${submit_fail_list}"
+        echo "${src_name}  ${repo}" >> "${submit_fail_list}"
     else 
-        echo "${repo}  ${job_id} ${result_root}" >> "${submit_succ_list}"
+        echo "${repo}  ${job_id}" >> "${submit_succ_list}"
     fi
 
     log_msg "" 
 
     ((submit_num++))
-    if [[ ${submit_num} != 0 && $((submit_num % 500)) == 0 ]]; then 
+    if [[ ${submit_num} != 0 && $((submit_num % 3000)) == 0 ]]; then 
         # 睡眠30分钟，防止当前提交任务抢占机器
         log_msg "sleep ${sleep_time} seconds ..."
         sleep ${sleep_time}

@@ -1,7 +1,7 @@
-suite: rpmbuild-watch-update
+suite: rpmbuild-fedora40
 category: functional
 rpmbuild:
-group_id: rpmbuild-watch-update
+group_id: rpmbuild-fedora40
 custom_repo_name: fedora40
 mount_repo_addr: https://api.compass-ci.openeuler.org:20018/rpm/testing/openeuler-24.03-LTS/fedora40/\$basearch
 mount_repo_name: fedora40

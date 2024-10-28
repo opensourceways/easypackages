@@ -189,25 +189,19 @@ do
 
     # 检查rpm是否成功
     if [ -f "${job_log_path}/output" ] && grep -q -F "${RPMBUILD_SUCC_FLAG}" "${job_log_path}/output"; then 
-        #if ! grep -q "${rpm_name_no_exten}" "${rpm_build_succ_file}"; then 
-        #    echo "${rpm_name}" >> "${rpm_build_succ_file}"
-        #fi
-        echo "${rpm_name}" >> "${rpm_build_succ_file}"
+        echo "${rpm_repo_addr}" >> "${rpm_build_succ_file}"
         
         if grep -q "${RPMBUILD_INSTALL_SUCC_FLAG}" "${job_log_path}/output"; then 
             # 安装成功
-            echo "${rpm_name}" >> "${rpm_build_install_succ_file}"
+            echo "${rpm_repo_addr}" >> "${rpm_build_install_succ_file}"
         else
             # 安装失败
-            echo "${rpm_name}" >> "${rpm_build_s_install_f_file}"
+            echo "${rpm_repo_addr}" >> "${rpm_build_s_install_f_file}"
         fi
     elif [ -f "${job_log_path}/dmesg" ] && grep -q -F "${RPMBUILD_INSTALLED_FLAG}" "${job_log_path}/dmesg"; then
-        #if ! grep -q "${rpm_name_no_exten}" "${rpm_build_installed_file}"; then 
-        #    echo "${rpm_name}" >> "${rpm_build_installed_file}"
-        #fi
-        echo "${rpm_repo_addr} ${rpm_name}" >> "${rpm_build_installed_file}"
+        echo "${rpm_repo_addr}" >> "${rpm_build_installed_file}"
     else 
-        echo "${rpm_repo_addr} ${rpm_name}" >> "${rpm_build_fail_file}"
+        echo "${rpm_repo_addr}" >> "${rpm_build_fail_file}"
 
         # 保存output日志和spec文件
         if [ -f "${job_log_path}/output" ]; then 
@@ -225,16 +219,15 @@ done < "${JOB_ID_LIST}"
 log_msg "creat next iterte list file ..."
 while read -r line; do
     repo_addr=$(echo "$line" | awk -F' ' '{print $1}')
-    rpm_name=$(echo "$line" | awk -F'/' '{print $NF}')
 
-    if grep -q "^${rpm_name}" "${rpm_build_succ_file}"; then
+    if grep -q "^${repo_addr}" "${rpm_build_succ_file}"; then
         # 在成功列表中
         continue
-    elif grep -q "^${rpm_name}" "${rpm_build_installed_file}"; then 
+    elif grep -q "^${repo_addr}" "${rpm_build_installed_file}"; then 
         # 在已安装列表中
         continue
     else
-        echo "${repo_addr} ${rpm_name}" >> "${rpm_build_next_iteate}"
+        echo "${line}" >> "${rpm_build_next_iteate}"
     fi
 done < "${SRC_LIST}"
 

@@ -2,33 +2,53 @@
 
 #----------------------------------------------------------------------------------
 # 参数介绍:
-#     -a: (ai) 使用AI修复spec文件
-#         可选value: before/build/all
-#           before: 在rpmbuild之前使用ai修复（必须上送log文件）
-#           build：如果rpmbuild构建失败，使用ai修复spec文件（可以不上送log文件）
-#           all: 在rpmbuild之前、构建失败时，都会使用ai修复spec文件（必须上送log文件）
+#    # 必须指定参数
+#    -l: (list) 指定批量list文件. (default file ./list)
+#        文件格式要求：(如无其它参数，可忽略其他参数部分)
+#            repo_addr 其他参数1 其他参数2 ...
 #
-#     -s: (src) 是否使用本地文件替换构建过程的文件
-#         value可以包含spec、log
-#           例如：spec、spec_log
+#    -h: 指定架构
+#        可选值：aarch64、x86_64
 #
-#     -d: (dir) 如果指定-s，则需要指定存放本地源文件的目录 (inlcude specs/logs/sources). 
-#          spec文件和log文件是对应的
+#    -t: 指定执行机规格
+#        可选值：vm-2p16g、vm-2p8g、vm-4p32g ...
 #
-#     -l: (list) 指定批量list文件. (default file ./list)
-#           文件格式要求：spec_name repo_addr source_name other_param
+#    -y: 指定job-yaml文件
 #
-#     -m: (mapping) 指定rpm特征文件修复spec文件（feature mapping file）
+#    -g: 指定日志路径
+#        指定运行此脚本时，输出的日志保存路径
 #
-#     -o：(other) 其他参数，多个参数以 “+” 分割
-#           例如:param_1+param_2+param_3
+#   # 可选参数
+#   -p：指定其他自定义参数 （check_rpm_install=yes res_file_exten=.fc40）
+#        check_rpm_install：（yes/no）是否检查待迁移rpm包以及存在
+#        res_file_exten：生成的源码包、二进制包需要添加额外的标记
 #
-#     -h: 指定架构（aarch64 x86_64）
-#     -t: 指定执行机规格 （vm-2p16g  vm-2p8g  vm-4p32g  2288hv3-2s24p-768g--b26）
-#     -p：指定其他自定义参数 （check_rpm_install=yes res_file_exten=.fc40）
-#     -y: 指定job-yaml文件
-#     -r: 指定repo_base_addr
-#     -g: 指定日志路径
+#   -r: 指定repo_base_addr
+#        使用此参数，在提交job时，提交的repo_addr会加上此前缀
+#        例如：
+#            原repo_addr="aa/bb/cc", repo_base_addr="https://basepath/xx/"
+#            则提交job时，repo_addr="https://basepath/xx/aa/bb/cc"
+#
+#    # 功能参数
+#    -a: (ai) 使用AI修复spec文件
+#         可选值: before/build/all
+#            before: 在rpm build之前使用ai修复（必须上送spec、log文件）
+#            build：如果rpm build构建失败，使用ai修复spec文件
+#            all: 在rpm build之前、构建失败时，都会使用ai修复spec文件（必须上送spec、log文件）
+#
+#    -s: (src) 是否使用本地文件替换构建过程的文件
+#        可选值：spec、log、spec_log
+#        存在spec，则表示上送spec文件
+#        存在log，则表示上送log文件
+#
+#    -d: (dir) 如果指定-s，则需要指定存放本地源文件的目录 (包含 specs/logs/sources).
+#        spec文件和log文件是对应的
+#
+#    -m: (mapping) 需要特征映射
+#        值：指定rpm特征文件修复spec文件（feature mapping file）
+#
+#    -o：(other) 其他参数，多个参数以 “+” 分割
+#            例如:param_1+param_2+param_3
 #
 # 说明：
 #   submit_arch 指定执行机架构： aarch64  x86_64

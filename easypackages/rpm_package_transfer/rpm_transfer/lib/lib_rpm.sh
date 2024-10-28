@@ -135,7 +135,7 @@ download_primary_xml_by_repomdxml()
         mkdir -p "${work_path}"
         chmod 775 "${work_path}"
     fi
-    #log_msg "[log] file save path: [${work_path}]"
+    log_msg "[log] file save path: [${work_path}]"
 
     cd "${work_path}" || exit 1
 
@@ -148,7 +148,7 @@ download_primary_xml_by_repomdxml()
         return 1 
     fi
 
-     # 过滤出软件信息文件
+    # 过滤出软件信息文件
     primary_xml_gz_file_name=$(grep "primary.xml.gz" ./repomd.xml)
     if [ -z "${primary_xml_gz_file_name}" ]; then 
         primary_xml_gz_file_name=$(grep "primary.xml" ./repomd.xml | head -n 1)
@@ -243,10 +243,13 @@ download_source_primary_xml()
     done
 
     cd "${ori_work_path}" || exit 1
-    
+
     for key in "${!repo_to_primary_xml_arr[@]}"; do
         repo_base=$(echo "${key}" | awk -F'/repodata' '{print $1}')
-        res_msg=$(python3 ./../utils/getRpmSourceList.py -lf "${list_file}" -xf "${xml_save_path}/${repo_to_primary_xml_arr[$key]}" -repo "${repo_base}")
+        res_msg=$(python3 ./rpm_transfer/utils/getRpmSourceList.py \
+                -lf "${list_file}" \
+                -xf "${xml_save_path}/${repo_to_primary_xml_arr[$key]}" \
+                -repo "${repo_base}")
         #echo "${res_msg[@]}"
         res_stat=$(echo "${res_msg[@]}" | grep -o "SUCCESS NOW")
         if [ -z "${res_stat}" ]; then

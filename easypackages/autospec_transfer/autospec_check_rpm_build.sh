@@ -51,6 +51,7 @@ do
 
         # 移动文件
         rm -f "${proc_file_tmp}"
+        ((last_position++))
         sed -n "${last_position},\$p" "${src_list}" >> "${proc_file}"
 
         # 处理文件

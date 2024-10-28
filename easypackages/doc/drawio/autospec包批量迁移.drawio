@@ -1,0 +1,242 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
+  <diagram name="第 1 页" id="gQKwrbpdDcLALgzKd0WU">
+    <mxGraphModel dx="7687" dy="3960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="V7nIqocJNu07dlvDADYR-57" value="" style="rounded=0;whiteSpace=wrap;html=1;fillStyle=dashed;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="-69.47" y="400" width="1340" height="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-48" value="" style="rounded=0;whiteSpace=wrap;html=1;fillStyle=dashed;dashed=1;dashPattern=8 8;" parent="1" vertex="1">
+          <mxGeometry x="-49.47" y="1041" width="440" height="639" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-51" value="" style="rounded=0;whiteSpace=wrap;html=1;fillStyle=dashed;dashed=1;dashPattern=8 8;" parent="1" vertex="1">
+          <mxGeometry x="429.48" y="960" width="820" height="651" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeColor=#001DBC;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#0050ef;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-1" target="V7nIqocJNu07dlvDADYR-222" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-1" value="获取迁移清单" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-8.520000000000001" y="490" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-40" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeWidth=3;fillColor=#0050ef;strokeColor=#001DBC;" parent="1" source="V7nIqocJNu07dlvDADYR-2" target="V7nIqocJNu07dlvDADYR-226" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-2" value="过滤源码路径相同的记录" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-8.520000000000001" y="770" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#001DBC;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#0050ef;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-6" target="V7nIqocJNu07dlvDADYR-231" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480.53" y="1521" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="270.53" y="1491" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-7" target="V7nIqocJNu07dlvDADYR-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-7" value="截检查清单（list1）中取最新的记录，并追加到检查处理清单（list2）" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="830.48" y="1131" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-8" target="V7nIqocJNu07dlvDADYR-10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910.48" y="1591" />
+              <mxPoint x="1229.48" y="1591" />
+              <mxPoint x="1229.48" y="1291" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-8" value="继续" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="830.48" y="1491" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-16" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-9" target="V7nIqocJNu07dlvDADYR-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-30" value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-16" vertex="1" connectable="0">
+          <mxGeometry x="-0.7015" y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-9" target="V7nIqocJNu07dlvDADYR-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-31" value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-21" vertex="1" connectable="0">
+          <mxGeometry x="0.1993" y="-5" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-9" value="检查清单&lt;span style=&quot;font-size: 15px;&quot;&gt;（list1）&lt;/span&gt;新加数据 || 检查处理清单&lt;span style=&quot;font-size: 15px;&quot;&gt;（list2）&lt;/span&gt;数据存在数据" style="rhombus;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="510.48" y="1131" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-10" target="V7nIqocJNu07dlvDADYR-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-32" value="处理完成" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-23" vertex="1" connectable="0">
+          <mxGeometry x="-0.0704" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-10" target="V7nIqocJNu07dlvDADYR-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-33" value="继续处理" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-24" vertex="1" connectable="0">
+          <mxGeometry x="0.1237" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-10" value="循环处理检查处理文件&lt;span style=&quot;font-size: 15px;&quot;&gt;（list2）&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="830.48" y="1251" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-11" target="V7nIqocJNu07dlvDADYR-10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110.48" y="1591" />
+              <mxPoint x="1229.48" y="1591" />
+              <mxPoint x="1229.48" y="1291" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-11" value="将记录追加到监控清单临时文件（list3）" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="1030.48" y="1491" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-12" target="V7nIqocJNu07dlvDADYR-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-35" value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-25" vertex="1" connectable="0">
+          <mxGeometry x="-0.1921" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-12" target="V7nIqocJNu07dlvDADYR-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-34" value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=15;" parent="V7nIqocJNu07dlvDADYR-27" vertex="1" connectable="0">
+          <mxGeometry x="-0.1347" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-12" value="记录对应任务是否已经使用源码包" style="rhombus;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="830.48" y="1371" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=15;" parent="1" source="V7nIqocJNu07dlvDADYR-13" target="V7nIqocJNu07dlvDADYR-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-13" value="使用监控清单临时文件（list3）覆盖 检查处理清单（list2）" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="631.48" y="1371" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-14" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="509.48" y="1171.0000000000005" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="469.47999999999996" y="1531" />
+              <mxPoint x="469.47999999999996" y="1171" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-14" value="睡眠10分钟" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="510.48" y="1491" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-46" value="2&amp;nbsp; -&amp;nbsp; 输入" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="72.53" y="710" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-52" value="监控脚本" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#f20202;" parent="1" vertex="1">
+          <mxGeometry x="438.49999999999994" y="970" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-54" value="清单脚本" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#f20202;" parent="1" vertex="1">
+          <mxGeometry x="-27.47" y="450" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-55" value="过滤脚本" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#f20202;" parent="1" vertex="1">
+          <mxGeometry x="-37.47" y="730" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-58" value="autospec迁移代码逻辑" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#0d0d0d;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="332.53" y="420" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-222" value="待迁移二进制包清单" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-7.519999999999898" y="650" width="159" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-223" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;待迁移二进制包清单&lt;/h1&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件名称：autospec_rpm_binary_list_架构类型&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件内容：&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;二进制包文件名称 源码路径 二进制包名 二进制包版本 架构类型&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="191.03" y="570" width="441.5" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-224" value="1&amp;nbsp; -&amp;nbsp; 输出" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="71.48" y="600" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-225" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#001DBC;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#0050ef;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-222" target="V7nIqocJNu07dlvDADYR-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="81.53" y="580" as="sourcePoint" />
+            <mxPoint x="81.53" y="660" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-226" value="待迁移源码清单" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-10.019999999999898" y="930" width="159" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-227" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeWidth=3;fillColor=#0050ef;strokeColor=#001DBC;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-226" target="V7nIqocJNu07dlvDADYR-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80.53" y="860" as="sourcePoint" />
+            <mxPoint x="79.53" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-228" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;待迁移源码包清单&lt;/h1&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件名称：autospec_rpm_src_list_架构类型&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件内容：&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;源码包名称&amp;nbsp;源码路径&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="191.03" y="850" width="441.5" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-229" value="3&amp;nbsp; -&amp;nbsp; 输出" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="72.53" y="870" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-230" value="4&amp;nbsp; -&amp;nbsp; 输入" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="75.53" y="990" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-3" target="V7nIqocJNu07dlvDADYR-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-3" value="清单" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-9.47" y="1091" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-4" target="V7nIqocJNu07dlvDADYR-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-4" value="批量submit" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-9.47" y="1331" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-5" target="V7nIqocJNu07dlvDADYR-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-5" value="拆分批次（每个批次100个），下载源码包到本地" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-9.47" y="1211" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-6" value="将数据追加到检查清单（list1）" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="-9.47" y="1451" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-53" value="迁移脚本" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#f20202;" parent="1" vertex="1">
+          <mxGeometry x="-59.47" y="1051" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-231" value="检查清单" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" parent="1" vertex="1">
+          <mxGeometry x="191.03000000000011" y="1371" width="159" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-232" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;检查清单&lt;/h1&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件名称：autospec_check_build_result_list&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件内容：&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;wget:源码包名称 job_id result_root&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-8.520000000000001" y="1571" width="359.05" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-234" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#001DBC;strokeWidth=3;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#0050ef;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="V7nIqocJNu07dlvDADYR-231" target="V7nIqocJNu07dlvDADYR-9" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160.53" y="1501" as="sourcePoint" />
+            <mxPoint x="280.53" y="1421" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="270.53" y="1090" />
+              <mxPoint x="590.53" y="1090" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-235" value="6&amp;nbsp; -&amp;nbsp; 输入" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="284.53" y="1101" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-236" value="5&amp;nbsp; -&amp;nbsp; 输出" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="181.48" y="1501" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="V7nIqocJNu07dlvDADYR-238" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;监控清单&lt;/h1&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件名称：autospec_check_build_result_list_ing&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;文件内容：&lt;/p&gt;&lt;p style=&quot;line-height: 40%;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;wget:源码包名称 job_id result_root&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="827" y="990" width="359.05" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

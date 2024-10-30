@@ -1,0 +1,101 @@
+R-gamlss.dist: R-sp
+R-gss: R-cli
+R-rle: R-lmtest
+admesh: chrpath
+awesfx: xorg-x11-drv-fbdev
+bluedevil: kf5-kcmutils
+cgnslib: make
+comic-neue-fonts: sil-nuosu-fonts
+corkscrew: sbc
+coxeter: gperf
+csdiff: diffutils
+dbusmenu-qt: qjson
+dnstop: mcpp
+drgeo: egl-wayland
+edflib: ed
+erlang-hamcrest: erlang-mustache
+gap-pkg-genss: gssdp
+gap-pkg-polenta: libadwaita
+geany-plugins: linux-sgx
+ghc-haskell-lexer: libmtp
+ghc-th-orphans: librabbitmq
+gmult: libgnomekbd
+golang-github-jeffail-gabs: protobuf-c
+golang-github-namedotcom: lua-term
+golang-github-smartystreets-goconvey: rubygem-racc
+golang-mvdan-gofumpt: rubygem-creole
+golang-storj-drpc: dde-app-services
+gupnp: gssdp gupnp-igd
+highway: brotli
+htppu: mac-robber
+ispc: delve
+jwm: libtool
+kf6-kdav: kf5-kdav
+libinsane: cgdcbxd
+libjwt: bubblewrap
+liblinear: libunistring
+libtimidity: libieee1284
+llvm-bolt: clang fmt
+llvm17: llvm clang lld
+lsdvd: lsscsi
+marcsabatella-campania-fonts: madan-fonts
+maven-invoker: maven-resources-plugin java-uuid-generator
+mingw-json-glib: json-glib gupnp gssdp
+mingw-numpy: numpy
+mingw-qt5-qtsensors: qt5-qtsensors qt5-qtgamepad
+ocaml-zarith: cloc
+otf2bdf: gperf
+pcmanfm-qt: libqtxdg adwaita-qt protobuf-c
+perl-Alien-Libxml2: perl-FFI-CheckLib perl-File-BaseDir
+perl-AnyEvent-I3: perl-Encode-HanExtra perl-HTTP-Server-Simple
+perl-CGI-Application-Plugin-Session: perl-Digest perl-BibTeX-Parser perl-B-Debug
+perl-Class-Iterator: perl-Class-Data-Inheritable perl-B-COW perl-App-FatPacker
+perl-DateTime-Format-DBI: perl-DateTime-Format-Builder perl-DateTime-Calendar-Julian
+  perl-Alien-Libxml2
+perl-Inline-Struct: perl-CPAN-Meta-YAML perl-Alien-Libxml2 perl-App-FatPacker
+perl-Mail-Sender: perl-Module-Install-ReadmeMarkdownFromPod
+perl-Mixin-Linewise: perl-List-MoreUtils perl-CPAN-Meta-YAML perl-B-Hooks-EndOfScope
+perl-Module-Install-AuthorTests: perl-Data-Section perl-Encode-HanExtra
+perl-Module-Mask: erlang-eflame
+perl-MooX-StrictConstructor: perl-Eval-Closure perl-Alien-Libxml2 perl-B-Hooks-EndOfScope
+perl-MooseX-Storage: perl-Package-Stash perl-Data-Section
+perl-Mozilla-CA: perl-Digest perl-Data-Dump
+perl-Net-Amazon-EC2-Metadata: perl-Data-Dumper-Names perl-App-FatPacker perl-B-COW
+perl-Parallel-Scoreboard: perl-AnyEvent-I3 perl-Math-BigInt-FastCalc perl-HTTP-Server-Simple
+perl-SVG-TT-Graph: perl-Digest perl-B-Debug perl-BibTeX-Parser
+perl-String-Compare-ConstantTime: perl-ExtUtils-CBuilder perl-Alien-Libxml2 perl-App-FatPacker
+perl-Task-Kensho-Toolchain: perl-Data-Section perl-B-Hooks-EndOfScope perl-Dist-CheckConflicts
+perl-Text-CSV: perl-Config-General perl-Class-Method-Modifiers
+perl-Text-Table: perl-Text-Template perl-BibTeX-Parser perl-Business-ISSN
+perl-Text-vFile-asData: perl-Text-Glob perl-Devel-LexAlias perl-Number-Compare
+perl-UNIVERSAL-moniker: perl-MRO-Compat perl-App-FatPacker
+perl-match-simple: perl-Data-OptList perl-Alien-Libxml2 perl-XML-LibXML-PrettyPrint
+pf-bb-config: libhugetlbfs
+plotmm: opencore-amr
+proxychains-ng: AFLplusplus
+python-azure-functions-devops-build: python-isula
+python-colorcet: python-apipkg
+python-contourpy: python-cssselect
+python-damo: python-hwdata
+python-django-macros: python-mdit-py-plugins
+python-hypercorn: python-authheaders
+python-minidump: python-pip-api
+python-mistune08: python-mistune
+python-opensensemap-api: python-mdurl
+python-pybv: python-pip-shims
+python-pygmars: python-astor
+python-sphinxcontrib-serializinghtml: python-sphinxcontrib-applehelp python-sphinx
+qca-qt4: qca dtkcore2
+raddump: R-AUC
+reuse: python-trustme python-dkimpy
+rubygem-rake-compiler: libgta
+rust-uu_true: rust-zincati
+rust-uu_truncate: rust-zincati
+rust-zincati: lib-shim-v2
+scponly: libreswan
+screen: findutils lftp
+sipcalc: compat-openssl11
+supervisor: python-supervisor
+wult: python-pact
+yamllint: python-yamllint
+ytalk: newlib fftw

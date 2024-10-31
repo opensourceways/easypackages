@@ -46,21 +46,38 @@ def parse_rss(xml_data):
     return packages
 
 
-def main():
+def get_top_100_update_packages():
     # Fetch the recent updates XML data
     xml_data = fetch_recent_updates()
     if not xml_data:
-        return
+        return None
 
     # Parse the RSS feed and extract package info
     packages = parse_rss(xml_data)
-
-    # Print the recent packages with their published dates
-    print(f"Recent package updates on PyPI:")
+    res = []
     for package in packages:
-        print(f"{package['title']} - "
-              f"{package['pub_date']} - "
-              f"{package['link']}")
+        parts = package['title'].split()
+        # print(f"{parts[0]}")
+        res.append(parts[0])
+    return res
+
+
+def main():
+    # # Fetch the recent updates XML data
+    # xml_data = fetch_recent_updates()
+    # if not xml_data:
+    #     return
+
+    # # Parse the RSS feed and extract package info
+    # packages = parse_rss(xml_data)
+
+    # # Print the recent packages with their published dates
+    # print(f"Recent package updates on PyPI:")
+    # for package in packages:
+    #     print(f"{package['title']} - "
+    #           f"{package['pub_date']} - "
+    #           f"{package['link']}")
+    get_top_100_update_packages()
 
 
 if __name__ == "__main__":

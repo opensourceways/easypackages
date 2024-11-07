@@ -15,7 +15,8 @@ RUN yum install -y git ruby rubygems make gcc diffutils util-linux lftp hostname
     && gem install rest-client \
     && git clone https://gitee.com/compass-ci/lkp-tests.git \
     && git clone https://ghp.ci/https://github.com/opensourceways/easypackages.git \
-    && pip install schedule
+    && pip install schedule \
+    && pip install requests
 
 WORKDIR /root/easypackages/easypackages/pypi/watch_update_source/src
 

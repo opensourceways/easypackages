@@ -3,6 +3,7 @@ import subprocess
 import time
 import schedule
 import get_update_pypi
+import remove_submit_logs
 
 # 全局标志位
 task_running = False
@@ -94,6 +95,8 @@ def run_update_task():
     list_file = get_update_content(update_cache)
     if list_file:
         exec_submit_build_job(list_file)
+
+    remove_submit_logs.remove_logs_dirs()
 
     task_running = False
 

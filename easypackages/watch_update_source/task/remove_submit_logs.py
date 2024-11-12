@@ -39,4 +39,5 @@ def remove_logs_dirs(log_dir='.', max_day=2):
 
 
 if __name__ == "__main__":
-    remove_logs_dirs()
+    path = "/root/easypackages/easypackages/watch_update_source/log"
+    remove_logs_dirs(path, 3)

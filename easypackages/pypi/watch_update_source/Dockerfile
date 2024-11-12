@@ -20,4 +20,4 @@ RUN yum install -y git ruby rubygems make gcc diffutils util-linux lftp hostname
 
 WORKDIR /root/easypackages/easypackages/pypi/watch_update_source/src
 
-CMD tail -f /dev/null & python3 schdule_main.py
+CMD python3 schedule_main.py

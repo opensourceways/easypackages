@@ -104,7 +104,7 @@ def run_update_task():
 def main():
     # 从环境变量中获取 API_KEY 和 URL, 并修改 update-pypi.yaml
     # 每10分钟获取增量更新进行构建执行
-    schedule.every(10).minutes.do(run_update_task)
+    schedule.every(30).minutes.do(run_update_task)
 
     while True:
         if not check_process_running():

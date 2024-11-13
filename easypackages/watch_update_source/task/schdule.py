@@ -21,8 +21,9 @@ def check_process_running(script_name):
 def run_shell_script():
     task_job_path = os.path.join(os.path.dirname(__file__), 'task_crontab.sh')
     script_name = os.path.basename(task_job_path)
-    remove_submit_logs.remove_logs_dirs(
-        "/root/easypackages/easypackages/watch_update_source/log", 30)
+    log_dir = "/root/easypackages/easypackages/watch_update_source/log"
+    if os.path.exists(log_dir):
+        remove_submit_logs.remove_logs_dirs(log_dir, 30)
     if not check_process_running(script_name):
         try:
             subprocess.Popen(["sh", task_job_path])

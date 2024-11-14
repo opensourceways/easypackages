@@ -11,4 +11,5 @@ os_arch: aarch64
 rpmbuild_type: pypi
 api_key: xxx(替换真实的OPEN AI KEY)
 base_url: xxx(替换真实的OPEN AI URL)
+ai_model: xxx(替换真实的OPEN AI model)
 runtime: 1d

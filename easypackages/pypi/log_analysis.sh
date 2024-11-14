@@ -30,6 +30,8 @@ need_repair_code=0
 no_module_error=0
 rpm_install_num=0
 repo_503_num=0
+repair_require_succ=0
+repair_require_fail=0
 total=$(grep -c "z9.*" "${file}")
 while read -r line;
 do
@@ -54,6 +56,9 @@ do
                 ((rpm_install_num++))
 		        fi
             ((success_num++))
+            if grep -q "old version: " "$output"; then
+                ((repair_require_succ++))
+            fi
             echo "rpmbuild:success" >> "${result_log_path}"
 		        echo "${repo_name}" >> "${result_succ_list}"
 		        continue
@@ -65,7 +70,11 @@ do
 	      spec_path=$(find "${job_result_path}" -name '*.spec')
 	      spec_name=$(basename "$spec_path")
 	      echo "====================spec_name:${spec_name}====================" >> "${result_log_path}"
-        echo "result:${job_result_path}" >> "${result_log_path}"
+          if grep -q "old version: " "$output"; then
+            ((repair_require_fail++))
+            echo "===== repaired require, but build failed" >> "${result_log_path}"
+          fi
+          echo "result:${job_result_path}" >> "${result_log_path}"
 	      if grep -q "rpmbuild success" "$output";then
 	          continue
 	      fi
@@ -119,6 +128,10 @@ done < "${file}"
     echo "====================rpm_install_num:${rpm_install_num}===================="
     echo
     echo "====================repo_503_num:${repo_503_num}===================="
+    echo
+    echo "====================repair_require_succ:${repair_require_succ}===================="
+    echo
+    echo "====================repair_require_fail:${repair_require_fail}===================="
 } >> "${dir_path}/tempfile.log"
 
 [ -f "${result_log_path}" ] && cat "${result_log_path}" >> "${dir_path}/tempfile.log"

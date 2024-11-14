@@ -18,6 +18,11 @@ RUN yum install -y git ruby rubygems make gcc diffutils util-linux lftp hostname
     && pip install schedule \
     && pip install requests
 
+#api_key,base_url,ai_model:xxxx填写自己的ai模型key,url,模型
+RUN sed -i 's|api_key: .*|api_key: xxxx|' /root/easypackages/easypackages/pypi/watch_update_source/src/update-pypi.yaml \
+    && sed -i 's|base_url: .*|base_url: xxxx|' /root/easypackages/easypackages/pypi/watch_update_source/src/update-pypi.yaml \
+    && sed -i 's|ai_model: .*|ai_model: xxxx|' /root/easypackages/easypackages/pypi/watch_update_source/src/update-pypi.yaml
+
 WORKDIR /root/easypackages/easypackages/pypi/watch_update_source/src
 
 CMD python3 schedule_main.py

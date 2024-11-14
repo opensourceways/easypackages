@@ -9,6 +9,8 @@ os: openeuler
 os_version: 24.03-LTS
 os_arch: aarch64
 rpmbuild_type: pypi
-api_key: xxx(替换真实的OPEN AI KEY)
-base_url: xxx(替换真实的OPEN AI URL)
+# api_key,base_url,ai_model:xxxx填写自己的ai模型key,url,模型
+api_key: xxx
+base_url: xxx
+ai_model: xxx
 runtime: 1d

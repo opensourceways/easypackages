@@ -1,10 +1,10 @@
-suite: rpmbuild-pypi
+suite: rpmbuild-python
 category: functional
 rpmbuild:
-group_id: rpmbuild-pypi
-custom_repo_name: ai
-mount_repo_addr: https://api.compass-ci.openeuler.org:20018/rpm/testing/openeuler-24.03-LTS/ai/\$basearch
-mount_repo_name: ai
+group_id: rpmbuild-python
+custom_repo_name: python
+mount_repo_addr: https://api.compass-ci.openeuler.org:20018/rpm/testing/openeuler-24.03-LTS/python/\$basearch
+mount_repo_name: python
 os: openeuler
 os_version: 24.03-LTS
 os_arch: aarch64

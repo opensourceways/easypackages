@@ -1,10 +1,10 @@
-suite: rpmbuild-autospec-mv
+suite: rpmbuild-github
 category: functional
 rpmbuild:
-group_id: rpmbuild-autospec-mv
-custom_repo_name: autospec-mv
+group_id: rpmbuild-github
+custom_repo_name: github
 mount_repo_addr: xxxxxxxx
-mount_repo_name: autospec-mv
+mount_repo_name: github
 os: openeuler
 os_version: 24.03-LTS
 runtime: 1d

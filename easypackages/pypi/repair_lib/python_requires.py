@@ -79,7 +79,7 @@ def get_new_line(old_line):
 
     message_content = "{old_line} 的另一种写法"
     completion = client.chat.completions.create(
-        model="nousresearch/hermes-3-llama-3.1-405b:free",
+        model=ai_model,
         temperature=0,
         messages=[
             {
@@ -163,8 +163,10 @@ if __name__ == "__main__":
                         help='ai api base url')
     parser.add_argument('api_key',
                         help='ai api key')
+    parser.add_argument('ai_model', help='ai model')
     args = parser.parse_args()
-    global base_url, api_key
+    global base_url, api_key, ai_model
     base_url = args.base_url
     api_key = args.api_key
+    ai_model = args.ai_model
     fix_old_version(args.requires_path, args.build_log_path)

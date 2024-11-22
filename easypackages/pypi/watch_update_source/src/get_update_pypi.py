@@ -1,5 +1,6 @@
-import requests
 import datetime
+
+import requests
 
 # PyPI JSON API URL to get recent updates
 RECENT_UPDATES_URL = "https://pypi.org/rss/updates.xml"
@@ -12,8 +13,9 @@ def fetch_recent_updates():
     if response.status_code == 200:
         return response.text
     else:
-        print(f"Failed to fetch recent updates."
-              f" Status code: {response.status_code}")
+        print(
+            f"Failed to fetch updates Status code: {response.status_code}"
+        )
         return None
 
 
@@ -33,15 +35,10 @@ def parse_rss(xml_data):
         pub_date = item.find("pubDate").text
 
         # Convert pubDate to a datetime object with the corrected format
-        pub_date_obj = (datetime.datetime.
-                        strptime(pub_date,
-                                 "%a, %d %b %Y %H:%M:%S %Z"))
+        pub_obj = datetime.datetime.strptime(pub_date,
+                                             "%a, %d %b %Y %H:%M:%S %Z")
 
-        packages.append({
-            "title": title,
-            "link": link,
-            "pub_date": pub_date_obj
-        })
+        packages.append({"title": title, "link": link, "pub_date": pub_obj})
 
     return packages
 
@@ -56,7 +53,7 @@ def get_top_100_update_packages():
     packages = parse_rss(xml_data)
     res = []
     for package in packages:
-        parts = package['title'].split()
+        parts = package["title"].split()
         # print(f"{parts[0]}")
         res.append(parts[0])
     return res

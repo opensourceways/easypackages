@@ -1,9 +1,10 @@
 import os
 import subprocess
 import time
-import schedule
+
 import get_update_pypi
 import remove_submit_logs
+import schedule
 
 # 全局标志位
 task_running = False
@@ -70,13 +71,21 @@ def exec_submit_build_job(list_file):
 
     # 构建命令
     command = [
-        'sh', '-x', 'submit-repair.sh',
-        '-l', pypi_name_list,
-        '-h', aarch_type,
-        '-t', 'vm-2p8g',
-        '-p', 'check_rpm_install=yes',
-        '-y', job_config,
-        '-g', submit_log_dir
+        "sh",
+        "-x",
+        "submit-repair.sh",
+        "-l",
+        pypi_name_list,
+        "-h",
+        aarch_type,
+        "-t",
+        "vm-2p8g",
+        "-p",
+        "check_rpm_install=yes",
+        "-y",
+        job_config,
+        "-g",
+        submit_log_dir,
     ]
 
     # 执行命令

@@ -1,10 +1,10 @@
+import argparse
 import os
 import sys
-import argparse
 
 from lib import lib_py_rpm
 
-'''
+"""
  功能描述：
     根据指定的源码包元数据文件，并解析出源码包列表
  参数：
@@ -17,13 +17,13 @@ from lib import lib_py_rpm
         文件内容: （源码包仓库地址 源码包名 源码包版本）
             repo_addr rpm_name rpm_version
         样    例:
-'''
+"""
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(usage=""" 获取源码包列表 """)
-    parser.add_argument('-lf', type=str, required=True, help="结果文件")
-    parser.add_argument('-xf', type=str, required=True, help="元数据文件")
-    parser.add_argument('-repo', type=str, required=True, help="源码包远端地址")
+    parser.add_argument("-lf", type=str, required=True, help="结果文件")
+    parser.add_argument("-xf", type=str, required=True, help="元数据文件")
+    parser.add_argument("-repo", type=str, required=True, help="源码包远端地址")
     args = parser.parse_args()
     list_file = str(args.lf)
     primary_xml = str(args.xf)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         print("FAIL NOW")
         sys.exit(1)
 
-    with open(list_file, 'a') as file:
+    with open(list_file, "a") as file:
         for record in res:
             file.write(record + "\n")
 

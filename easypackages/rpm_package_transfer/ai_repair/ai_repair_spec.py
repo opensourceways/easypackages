@@ -1,7 +1,8 @@
-from specrepair import SpecBot
-import sys
 import os
 import shutil
+import sys
+
+from specrepair import SpecBot
 
 # 参数说明：specFile
 #   specFilePath：.spec源文件路径，必输
@@ -10,13 +11,13 @@ import shutil
 #   suggestionPath：ai建议保存路径，必输
 
 # 设置环境变量
-os.environ['OPENAI_API_KEY'] = ''
-os.environ['OPENAI_BASE_URL'] = ''
+os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_BASE_URL"] = ""
 
 print("Ai repair spec begin ...")
 
 if len(sys.argv) != 7 and len(sys.argv) != 6:
-    print('error argumengs num [{}]'.format(len(sys.argv)))
+    print("error argumengs num [{}]".format(len(sys.argv)))
     for i in sys.argv:
         print(i)
     sys.exit(1)
@@ -40,7 +41,7 @@ log_src_path = os.path.dirname(log_src_file)
 # 修改后的spec脚本保存地址
 spec_repair_file = sys.argv[3]
 spec_repair_path = os.path.dirname(spec_repair_file)
- 
+
 # 修改建议
 suggestion_file = sys.argv[4]
 suggestion_path = os.path.dirname(suggestion_file)
@@ -55,12 +56,16 @@ for path in arr_path:
 
 specbot = SpecBot()
 if len(sys.argv) == 6:
-    suggestion, flag = specbot.repair(spec_src_file, log_src_file,spec_repair_file, ai_log_file)
+    suggestion, flag = specbot.repair(
+        spec_src_file, log_src_file, spec_repair_file, ai_log_file
+    )
 else:
-    suggestion, flag = specbot.repair_pro(spec_src_file, log_src_file, sys.argv[6],spec_repair_file, ai_log_file)
- 
+    suggestion, flag = specbot.repair_pro(
+        spec_src_file, log_src_file, sys.argv[6], spec_repair_file, ai_log_file
+    )
+
 # 打开文件用于写入，如果文件不存在则创建
-with open(suggestion_file, 'w') as file:
+with open(suggestion_file, "w") as file:
     # 将字符串写入文件
     file.write(suggestion)
 

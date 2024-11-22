@@ -4,23 +4,23 @@ import shutil
 from datetime import datetime
 
 
-def remove_logs_dirs(log_dir='.', max_day=2):
+def remove_logs_dirs(log_dir=".", max_day=2):
     # 获取当前日期
     current_date = datetime.now()
     # print("remove_submit_logs start")
     # 遍历目录下的所有文件
     for filename in os.listdir(log_dir):
-        if filename.startswith('submit-log'):  # 确保文件名长度正确
+        if filename.startswith("submit-log"):  # 确保文件名长度正确
             print(filename)
             try:
-                date_match = re.search(r'\d{8}', filename)
+                date_match = re.search(r"\d{8}", filename)
                 if date_match:
                     date_str = date_match.group(0)
                 else:
                     continue
-                file_datetime = datetime.strptime(date_str, '%Y%m%d')
+                file_datetime = datetime.strptime(date_str, "%Y%m%d")
             except ValueError:
-                print(f'Filename {filename} does not match, skipping.')
+                print(f"Filename {filename} does not match, skipping.")
                 continue
 
             # 计算文件日期与当前日期的差值

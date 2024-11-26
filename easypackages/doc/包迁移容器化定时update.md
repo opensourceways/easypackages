@@ -21,7 +21,7 @@
 
 1. 使用当前工作目录中的Dockerfile构建一个名为 openeuler-package-migration-update 的Docker镜像
 
-start_container.sh
+#### start_container.sh
 **作用：基于定制化的用于包迁移定时update的容器镜像，创建并启动容器实例**
 
 

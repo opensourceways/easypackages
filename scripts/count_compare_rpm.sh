@@ -83,19 +83,19 @@ count_result(){
     # 源码包构建成功个数
     src_rpm_build_total=$(wc -l "$src_rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 源码包构建成功包名称个数
-    src_rpm_build_package_total=$(wc -l "$src_rpm_uniq_tmp_file"|awk -F ' ' '{print \$1}')
+    src_rpm_build_package_total=$(wc -l "$src_rpm_uniq_tmp_file"|awk -F ' ' '{print $1}')
     # 二进制包构建成功个数
-    rpm_build_total=$(wc -l "$rpm_info_tmp_file"|awk -F ' ' '{print \$1}')
+    rpm_build_total=$(wc -l "$rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 二进制包构建成功包名称个数
-    rpm_build_package_total=$(wc -l "$rpm_uniq_tmp_file"|awk -F ' ' '{print \$1}')
+    rpm_build_package_total=$(wc -l "$rpm_uniq_tmp_file"|awk -F ' ' '{print $1}')
     # 发布成功源码包个数
-    pub_src_rpm_total=$(wc -l "$src_pub_rpm_info_tmp_file"|awk -F ' ' '{print \$1}')
+    pub_src_rpm_total=$(wc -l "$src_pub_rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 发布成功源码包名称个数
-    pub_src_rpm_package_total=$(wc -l "$src_pub_rpm_uniq_tmp_file"|awk -F ' ' '{print \$1}')
+    pub_src_rpm_package_total=$(wc -l "$src_pub_rpm_uniq_tmp_file"|awk -F ' ' '{print $1}')
     # 发布成功二进制包个数
-    pub_rpm_build_total=$(wc -l "$pub_rpm_info_tmp_file"|awk -F ' ' '{print \$1}')
+    pub_rpm_build_total=$(wc -l "$pub_rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 发布成功二进制包名称个数
-    pub_rpm_build_package_total=$(wc -l "$pub_rpm_uniq_tmp_file"|awk -F ' ' '{print \$1}')
+    pub_rpm_build_package_total=$(wc -l "$pub_rpm_uniq_tmp_file"|awk -F ' ' '{print $1}')
 
     echo "no_pub_total=$build_success_total,pub_total=$pub_success_total"
 

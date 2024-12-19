@@ -23,7 +23,7 @@ join_param(){
     for (( i=0; i<${#PARAM[@]}; i+=2 )); do
         if (( i+1 < ${#PARAM[@]} )); then
             result="${PARAM[i]} ${PARAM[i+1]}"
-            echo "sh count_compare_rpm.sh "$result" "
+            echo "sh count_compare_rpm.sh $result"
             sh count_compare_rpm.sh "${PARAM[i]}" "${PARAM[i+1]}" &
         fi
     done

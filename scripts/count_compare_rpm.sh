@@ -69,13 +69,13 @@ find_process_rpm(){
         find "$rpm_path" -name "*rpm" | grep "src" > "$rpm_info_tmp_file"
     fi
     get_src_num "$rpm_info_tmp_file" > "$rpm_pkg_tmp_file"
-    cat "$rpm_pkg_tmp_file"| sort|uniq -c|sort -nr|more > "$rpm_uniq_tmp_file"
+    sort "$rpm_pkg_tmp_file" | uniq -c | sort -nr > "$rpm_uniq_tmp_file"
 }
 
 count_result(){
     # 统计结果
     system_type=$1
-    
+
     # 源码包构建成功个数
     src_rpm_build_total=$(wc -l "$src_rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 源码包构建成功包名称个数

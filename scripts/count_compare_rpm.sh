@@ -28,7 +28,7 @@ get_src_num(){
 
 lookup_count_rpm(){
     # 查找统计rpm包情况
-    system_type=$(basename $RPM_PATH)  
+    system_type=$(basename "$RPM_PATH")  
     rpm_info_tmp_file=$system_type"_rpm_1103.txt"
     rpm_pkg_tmp_file=$system_type"_rpm_package_name_1103.txt"
     rpm_uniq_tmp_file=$system_type"_uniq_rpm_1103.txt"
@@ -45,7 +45,7 @@ lookup_count_rpm(){
     src_pub_rpm_pkg_tmp_file=$system_type"_src_pub_rpm_package_name_1103.txt"
     src_pub_rpm_uniq_tmp_file=$system_type"_uniq_src_pub_rpm_1103.txt"
     # 二进制rpm包情况
-    find_process_rpm "$rpm_info_tmp_file" "$rpm_pkg_tmp_file" "$rpm_uniq_tmp_file" $RPM_PATH "N"
+    find_process_rpm "$rpm_info_tmp_file" "$rpm_pkg_tmp_file" "$rpm_uniq_tmp_file" "$RPM_PATH" "N"
     # 发布二进制包情况
     find_process_rpm "$pub_rpm_info_tmp_file" "$pub_rpm_pkg_tmp_file" "$pub_rpm_uniq_tmp_file" "$PUB_RPM_PATH" "N"
     # 源码包情况
@@ -99,7 +99,7 @@ count_result(){
 
     echo "no_pub_total=$build_success_total,pub_total=$pub_success_total"
 
-    cat > $system_type"_count_result_info.txt" <<EOF
+    cat > "$system_type""_count_result_info.txt" <<EOF
         -----------------------------------统计清单---------------------------------------------
                     构建成功                                     发布成功
         src.rpm源码包      二进制RPM软件包         src.rpm源码包          二进制RPM软件包
@@ -112,7 +112,7 @@ EOF
 
 clear_tmp_file(){
     #清理临时文件
-    rm $system_type*1103.txt
+    rm "$system_type"*1103.txt
 }
 
 check_params

@@ -75,11 +75,7 @@ find_process_rpm(){
 count_result(){
     # 统计结果
     system_type=$1
-    # 未发布
-    build_success_total=$(ls | grep "$system_type" | grep 1103 | grep -v pub |grep -v name | xargs wc -l)
-
-    # 发布
-    pub_success_total=$(ls | grep "$system_type" | grep 1103 | grep pub |grep -v name | xargs wc -l)
+    
     # 源码包构建成功个数
     src_rpm_build_total=$(wc -l "$src_rpm_info_tmp_file"|awk -F ' ' '{print $1}')
     # 源码包构建成功包名称个数
@@ -97,7 +93,6 @@ count_result(){
     # 发布成功二进制包名称个数
     pub_rpm_build_package_total=$(wc -l "$pub_rpm_uniq_tmp_file"|awk -F ' ' '{print $1}')
 
-    echo "no_pub_total=$build_success_total,pub_total=$pub_success_total"
 
     cat > "$system_type""_count_result_info.txt" <<EOF
         -----------------------------------统计清单---------------------------------------------

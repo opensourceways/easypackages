@@ -1,0 +1,9 @@
+channel = "openEuler-24.03-LTS"
+arch = ["aarch64", "x86_64"]
+[repos.OS]
+baseurl = "https://repo.openeuler.org/openEuler-24.03-LTS/OS"
+[repos.everything]
+baseurl = "https://repo.openeuler.org/openEuler-24.03-LTS/everything"
+[job]
+os = "openeuler"
+os_version = "24.09-LTS"

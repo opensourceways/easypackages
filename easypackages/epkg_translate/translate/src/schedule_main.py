@@ -5,6 +5,7 @@ import schedule
 import subprocess
 import time
 
+
 def is_porcess_alive(script_name):
     """检查进程是否存活"""
     try:
@@ -26,6 +27,8 @@ def run():
             print("Script executed successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Script failed with error: {e}")
+
+
 # 每天凌晨两点执行任务
 schedule.every(5).seconds.do(run)
 

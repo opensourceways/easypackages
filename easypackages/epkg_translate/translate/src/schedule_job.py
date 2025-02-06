@@ -23,7 +23,7 @@ class SubmitJob(object):
                 command = "submit -m -c translate_job.yaml rpm_baseurl={0} \
                         repo_name={1} translate_strategy=all".format(baseurl,
                                                                      channel)
-                subprocess.Popen(command, shell=True, 
+                subprocess.Popen(command, shell=True,
                                  text=True, capture_output=True)
             else:
                 #  增量转换
@@ -31,9 +31,9 @@ class SubmitJob(object):
                     if repos_info["watch_update"]:
                         command = "submit -m -c translate_job.yaml \
                                  rpm_baseurl={0} repo_name={1} \
-                                 translate_strategy=delta".format(baseurl, 
+                                 translate_strategy=delta".format(baseurl,
                                                                   channel)
-                        subprocess.Popen(command, shell=True, 
+                        subprocess.Popen(command, shell=True,
                                          text=True, capture_output=True)
             count += 1
             submit_job_count += 1

@@ -50,20 +50,20 @@ def parse_toml(repo_toml=[]):
                         repo_info.append(everything_repo_info_dic)
                         if "repos" in config and "update" in config["repos"] \
                             and "watch_update" in config["repos"]["update"]:
-                                repo_update_baseurl = \
-                                    config["repos"]["update"]["baseurl"]
-                                watch_update = \
-                                    config["repos"]["update"]["watch_update"]                                        
-                                update_repo_info_dic = {
-                                    "channel": channel,
-                                    "arch": arch,
-                                    "repo_name": "update",
-                                    "baseurl": repo_update_baseurl,
-                                    "watch_update": watch_update,
-                                    "os": repo_os,
-                                    "os_version": repo_os_version
-                                }
-                                repo_info.append(update_repo_info_dic)
+                            repo_update_baseurl = \
+                                config["repos"]["update"]["baseurl"]
+                            watch_update = \
+                                config["repos"]["update"]["watch_update"]                   
+                            update_repo_info_dic = {
+                                "channel": channel,
+                                "arch": arch,
+                                "repo_name": "update",
+                                "baseurl": repo_update_baseurl,
+                                "watch_update": watch_update,
+                                "os": repo_os,
+                                "os_version": repo_os_version
+                            }
+                            repo_info.append(update_repo_info_dic)
     else:
         # 增量转换策略
         for root, dirs, files in os.walk(repos_dir):
@@ -76,20 +76,20 @@ def parse_toml(repo_toml=[]):
                         arch = config["arch"]
                         if "repos" in config and "update" in config["repos"] \
                             and "watch_update" in config["repos"]["update"]:
-                                repo_update_baseurl = \
-                                    config["repos"]["update"]["baseurl"]
-                                watch_update = \
-                                    config["repos"]["update"]["watch_update"]                                
-                                update_repo_info_dic = {
-                                    "channel": channel,
-                                    "arch": arch,
-                                    "repo_name": "update",
-                                    "baseurl": repo_update_baseurl,
-                                    "watch_update": watch_update,
-                                    "os": repo_os,
-                                    "os_version": repo_os_version
-                                }
-                                repo_info.append(update_repo_info_dic)     
+                            repo_update_baseurl = \
+                                config["repos"]["update"]["baseurl"]
+                            watch_update = \
+                                config["repos"]["update"]["watch_update"]
+                            update_repo_info_dic = {
+                                "channel": channel,
+                                "arch": arch,
+                                "repo_name": "update",
+                                "baseurl": repo_update_baseurl,
+                                "watch_update": watch_update,
+                                "os": repo_os,
+                                "os_version": repo_os_version
+                            }
+                            repo_info.append(update_repo_info_dic)
     return repo_info
 
 
@@ -97,14 +97,14 @@ def main():
     """"函数入口"""
     rp_info = parse_toml()
     if rp_info:
-            print("submit job...")
-            submitjob = SubmitJob(rp_info, strategy="delta")
-            ret = submitjob.run()
-            if ret == 0:
-                print("submit job success")
-            else:
-                print("submit job failed")
-                sys.exit(1)
+        print("submit job...")
+        submitjob = SubmitJob(rp_info, strategy="delta")
+        ret = submitjob.run()
+        if ret == 0:
+            print("submit job success")
+        else:
+            print("submit job failed")
+            sys.exit(1)
     else:
         print("parse yaml file failed")
         sys.exit(1)

@@ -17,6 +17,6 @@ RUN yum install -y git ruby rubygems make gcc diffutils util-linux lftp hostname
     && git clone https://ghp.ci/https://github.com/opensourceways/easypackages.git \
     && pip install schedule
 
-WORKDIR /root/easypackages/easypackages/epkg_package_transfer/task
+WORKDIR /root/easypackages/easypackages/epkg_translate/translate/src
 
-CMD tail -f /dev/null & python3 schdule.py
+CMD tail -f /dev/null & python3 schdule_main.py

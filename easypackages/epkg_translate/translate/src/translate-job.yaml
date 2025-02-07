@@ -1,0 +1,17 @@
+suite: epkg-translate
+category: functional
+
+group_id: epkg-translate
+
+program:
+  epkg-translate:
+    custom_repo_name: epkg
+    mount_repo_name: epkg
+    runtime: 1d
+    strategy: {main.strategy}
+    _epkg_repo_server: https://api.compass-ci.openeuler.org:20018
+    _epkg_repo_dir: /rpm/testing/epkg/{toml.channel}
+
+os: {toml.job.os}
+os_version: {toml.job.os_version}
+os_arch: {toml.arch}

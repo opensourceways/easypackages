@@ -1,0 +1,21 @@
+#!/bin/bash
+# SPDX-License-Identifier: MulanPSL-2.0+
+# Copyright (c) 2020 Huawei Technologies Co., Ltd. All rights reserved.
+
+. $CCI_SRC/container/defconfig.sh
+. $CCI_SRC/container/srv-http/docker_run.sh
+
+cmd=(
+        docker run
+        --restart=always
+        --name epkg_repo_nginx 
+	-e LISTEN_PORT=20232
+        -p 8099:8099
+        -v /etc/localtime:/etc/localtime:ro
+	-v /srv/rpm/epkg:/srv/rpm/epkg:rw
+	$(mount_ssl)
+	-d
+	epkg_repo_nginx
+)
+
+"${cmd[@]}"
